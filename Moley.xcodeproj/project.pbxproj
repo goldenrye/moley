@@ -1,0 +1,987 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		6646B9F7913DC2D89AEE2029 /* WireGuardGoBridge */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6B9298F0C684B48615BAED07 /* Build configuration list for PBXAggregateTarget "WireGuardGoBridge" */;
+			buildPhases = (
+				A7542DCEFA7337FE81384C0E /* Build WireGuard Go backend */,
+			);
+			dependencies = (
+			);
+			name = WireGuardGoBridge;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		04B9ED8935F49FC7001F0F45 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = E71296AA3347BEB502C46EB9 /* x25519.c */; };
+		163EA983F3B455D1A84DCEE2 /* PacketTunnelSettingsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D46774863B3FC1ACFAE29F /* PacketTunnelSettingsGenerator.swift */; };
+		1AB19756B57D778952F717CA /* ProfileKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6996E058B423F6AF94B06FB3 /* ProfileKeychain.swift */; };
+		2018436CB9B06367E319C9E2 /* TunnelHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46B03520FC846D55106DC15D /* TunnelHealth.swift */; };
+		2097B80CFA2CE00CD04F20EF /* Array+ConcurrentMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743827952C9B54AA86A03AD2 /* Array+ConcurrentMap.swift */; };
+		31B679F58BDCE8E11E82B9CB /* InterfaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E893C7AAAA80E8E812C43A /* InterfaceConfiguration.swift */; };
+		45C618F680456FFDEBF66CD2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E6C5A7A0D0DD94B5FC1DE6 /* HomeView.swift */; };
+		51AD0C3D8E219B138E36A884 /* DNSServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C462E9CC80B1C7EEA6B7B7 /* DNSServer.swift */; };
+		577682346B01D211DDCE1DAE /* WireGuardProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4F5453F2213B43611E960 /* WireGuardProfile.swift */; };
+		5B85FB24B2D9954E7595C020 /* IPAddressRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6954A319E55554F368EB5E /* IPAddressRange.swift */; };
+		61FEBCB1022CB378FCCC66BE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4B26EDF30C5003C210E3C /* Endpoint.swift */; };
+		633FAAE588CE3608642738C5 /* IPAddressRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6954A319E55554F368EB5E /* IPAddressRange.swift */; };
+		672E815C7BE5A7496A396429 /* IPAddress+AddrInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77402CA35E0CFDAE4A245598 /* IPAddress+AddrInfo.swift */; };
+		75824476D8CF058E5F73C7C2 /* WireGuardAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F49B5B5F88AE3580670C4B8 /* WireGuardAdapter.swift */; };
+		7808665EB799CD4D7B8D59A6 /* TunnelHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46B03520FC846D55106DC15D /* TunnelHealth.swift */; };
+		81AEDD37611B386FAE46D282 /* MoleyTunnel.appex in Embed VPN Extension */ = {isa = PBXBuildFile; fileRef = 156FE8561CC2D1E0294B093A /* MoleyTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		87D69A41736BD546CD691093 /* TunnelConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F475990B68ABF347EAD0CC8 /* TunnelConfiguration.swift */; };
+		92E5380B973E8EF44F382AFE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4B26EDF30C5003C210E3C /* Endpoint.swift */; };
+		9B375F1328AB19FEA69F8DBB /* MoleyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0BFBC34B9A56997A885083 /* MoleyApp.swift */; };
+		A373723914344B9244F78F8A /* WireGuardAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F49B5B5F88AE3580670C4B8 /* WireGuardAdapter.swift */; };
+		A5ECAC43905441DC7FF5E324 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90DB759AE74ABB5A604914C3 /* Foundation.framework */; };
+		A66013DB682D30FE6E39CA2A /* TunnelConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F475990B68ABF347EAD0CC8 /* TunnelConfiguration.swift */; };
+		A965FD3BC1710FAE812F00DB /* ImportProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E46E2D0242621C13FCBA8B6 /* ImportProfileView.swift */; };
+		ADFC83D14516BD14D92F6CE7 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC3E4C3BE8F0930CD4AE19B /* PacketTunnelProvider.swift */; };
+		B238524678017FB105DE47AE /* PeerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4914A4D851C8885B13DEDA37 /* PeerConfiguration.swift */; };
+		B60258204C40DF6FC1E7E665 /* ProfileKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6996E058B423F6AF94B06FB3 /* ProfileKeychain.swift */; };
+		B9D141737764F91E569E447F /* VPNController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FBD27CF9152ABFE0BC30A0F /* VPNController.swift */; };
+		BDEA3535DF353FAFA4AC22F8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90DB759AE74ABB5A604914C3 /* Foundation.framework */; };
+		C0B58A2B0F5BE29EEC423E07 /* key.c in Sources */ = {isa = PBXBuildFile; fileRef = DE2C45D1066FC7987B29FAD7 /* key.c */; };
+		C5BE8222A5B2FD189607FAA6 /* WireGuardProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA1AA752B44CEF8C022A2FE /* WireGuardProfileTests.swift */; };
+		C6D4CD6782A35ADD77BA804F /* key.c in Sources */ = {isa = PBXBuildFile; fileRef = DE2C45D1066FC7987B29FAD7 /* key.c */; };
+		C8C8CBE4A4998BAB14116313 /* PeerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4914A4D851C8885B13DEDA37 /* PeerConfiguration.swift */; };
+		CDCC32A857AEB65BFD7B5665 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = E71296AA3347BEB502C46EB9 /* x25519.c */; };
+		D543F99CFFE1F088A108591A /* DNSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0A74A088E54B3F318363DD /* DNSResolver.swift */; };
+		D84BCD26CB8C6B06C13F406B /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCA65FD7FEC03EB72E0FC48 /* PrivateKey.swift */; };
+		D9CBAA099EC4413400294359 /* InterfaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E893C7AAAA80E8E812C43A /* InterfaceConfiguration.swift */; };
+		DD0A9B760935533DBC0FE775 /* DNSServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C462E9CC80B1C7EEA6B7B7 /* DNSServer.swift */; };
+		DD18EA96DAD5C58C3585ED01 /* WireGuardProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D4F5453F2213B43611E960 /* WireGuardProfile.swift */; };
+		E064F9CF54E86463A30C1D3A /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCA65FD7FEC03EB72E0FC48 /* PrivateKey.swift */; };
+		E0FA634D3E53A33586679CDB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8311F6BDC8B925EB33049345 /* Assets.xcassets */; };
+		E490A9EAC6A4D0B6FBBD5C76 /* DNSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0A74A088E54B3F318363DD /* DNSResolver.swift */; };
+		EA8F6383A2C9BBFEE87CB17D /* MoleyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE37A920B6577C09339D178E /* MoleyUITests.swift */; };
+		EC6A84C88BAF1E26FE57EF47 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90DB759AE74ABB5A604914C3 /* Foundation.framework */; };
+		ECB5BAE358ABC2A0844F8656 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90DB759AE74ABB5A604914C3 /* Foundation.framework */; };
+		F351842ED12EA57C8FDE0DF5 /* IPAddress+AddrInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77402CA35E0CFDAE4A245598 /* IPAddress+AddrInfo.swift */; };
+		F511423BC72EBC2B1C38065F /* PacketTunnelSettingsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D46774863B3FC1ACFAE29F /* PacketTunnelSettingsGenerator.swift */; };
+		F6751FBFE6BE0D1DB4D21292 /* Array+ConcurrentMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743827952C9B54AA86A03AD2 /* Array+ConcurrentMap.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1743F604846ADADFCA480931 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AE36AF5A88D0147FF9B3EE3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D38412E8FF3AA3AC6D4A69C5;
+			remoteInfo = Moley;
+		};
+		45084EE2AC244C4B5F62F46C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AE36AF5A88D0147FF9B3EE3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D38412E8FF3AA3AC6D4A69C5;
+			remoteInfo = Moley;
+		};
+		60B0ADB4C35D6C22B3DF26C5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AE36AF5A88D0147FF9B3EE3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57300A5517E340559B573991;
+			remoteInfo = MoleyTunnel;
+		};
+		CD0E586B1AC2F2A6C69AC936 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AE36AF5A88D0147FF9B3EE3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6646B9F7913DC2D89AEE2029;
+			remoteInfo = WireGuardGoBridge;
+		};
+		D9189765FF57AA39EC135D1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AE36AF5A88D0147FF9B3EE3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6646B9F7913DC2D89AEE2029;
+			remoteInfo = WireGuardGoBridge;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		257F23BF1DD0D74541FB920B /* Embed VPN Extension */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				81AEDD37611B386FAE46D282 /* MoleyTunnel.appex in Embed VPN Extension */,
+			);
+			name = "Embed VPN Extension";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		07D46774863B3FC1ACFAE29F /* PacketTunnelSettingsGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PacketTunnelSettingsGenerator.swift; path = WireGuardKit/PacketTunnelSettingsGenerator.swift; sourceTree = "<group>"; };
+		0E46E2D0242621C13FCBA8B6 /* ImportProfileView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImportProfileView.swift; sourceTree = "<group>"; };
+		0FBD27CF9152ABFE0BC30A0F /* VPNController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNController.swift; sourceTree = "<group>"; };
+		156FE8561CC2D1E0294B093A /* MoleyTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MoleyTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AE4B26EDF30C5003C210E3C /* Endpoint.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Endpoint.swift; path = WireGuardKit/Endpoint.swift; sourceTree = "<group>"; };
+		2FA1AA752B44CEF8C022A2FE /* WireGuardProfileTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WireGuardProfileTests.swift; sourceTree = "<group>"; };
+		3F475990B68ABF347EAD0CC8 /* TunnelConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TunnelConfiguration.swift; path = WireGuardKit/TunnelConfiguration.swift; sourceTree = "<group>"; };
+		46B03520FC846D55106DC15D /* TunnelHealth.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TunnelHealth.swift; sourceTree = "<group>"; };
+		4914A4D851C8885B13DEDA37 /* PeerConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PeerConfiguration.swift; path = WireGuardKit/PeerConfiguration.swift; sourceTree = "<group>"; };
+		59D4F5453F2213B43611E960 /* WireGuardProfile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WireGuardProfile.swift; sourceTree = "<group>"; };
+		5E0A74A088E54B3F318363DD /* DNSResolver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DNSResolver.swift; path = WireGuardKit/DNSResolver.swift; sourceTree = "<group>"; };
+		6996E058B423F6AF94B06FB3 /* ProfileKeychain.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProfileKeychain.swift; sourceTree = "<group>"; };
+		743827952C9B54AA86A03AD2 /* Array+ConcurrentMap.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Array+ConcurrentMap.swift"; path = "WireGuardKit/Array+ConcurrentMap.swift"; sourceTree = "<group>"; };
+		77402CA35E0CFDAE4A245598 /* IPAddress+AddrInfo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "IPAddress+AddrInfo.swift"; path = "WireGuardKit/IPAddress+AddrInfo.swift"; sourceTree = "<group>"; };
+		7E0BFBC34B9A56997A885083 /* MoleyApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MoleyApp.swift; sourceTree = "<group>"; };
+		81E6C5A7A0D0DD94B5FC1DE6 /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		8311F6BDC8B925EB33049345 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8F49B5B5F88AE3580670C4B8 /* WireGuardAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WireGuardAdapter.swift; path = WireGuardKit/WireGuardAdapter.swift; sourceTree = "<group>"; };
+		90DB759AE74ABB5A604914C3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		A4C462E9CC80B1C7EEA6B7B7 /* DNSServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DNSServer.swift; path = WireGuardKit/DNSServer.swift; sourceTree = "<group>"; };
+		AC6954A319E55554F368EB5E /* IPAddressRange.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IPAddressRange.swift; path = WireGuardKit/IPAddressRange.swift; sourceTree = "<group>"; };
+		ACC3E4C3BE8F0930CD4AE19B /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
+		BCCA65FD7FEC03EB72E0FC48 /* PrivateKey.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrivateKey.swift; path = WireGuardKit/PrivateKey.swift; sourceTree = "<group>"; };
+		D7E893C7AAAA80E8E812C43A /* InterfaceConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InterfaceConfiguration.swift; path = WireGuardKit/InterfaceConfiguration.swift; sourceTree = "<group>"; };
+		DBB2F2267EB5AA5FCF9D1A99 /* Project.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Project.xcconfig; path = Config/Project.xcconfig; sourceTree = "<group>"; };
+		DE2C45D1066FC7987B29FAD7 /* key.c */ = {isa = PBXFileReference; includeInIndex = 1; name = key.c; path = WireGuardKitC/key.c; sourceTree = "<group>"; };
+		DE88F507C6B5BE65518971F2 /* MoleyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoleyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E71296AA3347BEB502C46EB9 /* x25519.c */ = {isa = PBXFileReference; includeInIndex = 1; name = x25519.c; path = WireGuardKitC/x25519.c; sourceTree = "<group>"; };
+		EE37A920B6577C09339D178E /* MoleyUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MoleyUITests.swift; sourceTree = "<group>"; };
+		F1125C7B7532312C11BE3F29 /* Moley.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moley.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4FE504D6D4914BD1C29A751 /* MoleyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoleyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1BEB76B7C2168ED49E73F7F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB5BAE358ABC2A0844F8656 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B218F5A0A4CC70AC09D1B29 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5ECAC43905441DC7FF5E324 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8BA753DAD25A210C2F60778C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC6A84C88BAF1E26FE57EF47 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9FDF813E7C4D47415174D3C0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDEA3535DF353FAFA4AC22F8 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0FE8C2BDEEE36EE7E246A4A9 /* WireGuardKit */ = {
+			isa = PBXGroup;
+			children = (
+				743827952C9B54AA86A03AD2 /* Array+ConcurrentMap.swift */,
+				5E0A74A088E54B3F318363DD /* DNSResolver.swift */,
+				A4C462E9CC80B1C7EEA6B7B7 /* DNSServer.swift */,
+				1AE4B26EDF30C5003C210E3C /* Endpoint.swift */,
+				77402CA35E0CFDAE4A245598 /* IPAddress+AddrInfo.swift */,
+				AC6954A319E55554F368EB5E /* IPAddressRange.swift */,
+				D7E893C7AAAA80E8E812C43A /* InterfaceConfiguration.swift */,
+				07D46774863B3FC1ACFAE29F /* PacketTunnelSettingsGenerator.swift */,
+				4914A4D851C8885B13DEDA37 /* PeerConfiguration.swift */,
+				BCCA65FD7FEC03EB72E0FC48 /* PrivateKey.swift */,
+				3F475990B68ABF347EAD0CC8 /* TunnelConfiguration.swift */,
+				8F49B5B5F88AE3580670C4B8 /* WireGuardAdapter.swift */,
+				DE2C45D1066FC7987B29FAD7 /* key.c */,
+				E71296AA3347BEB502C46EB9 /* x25519.c */,
+			);
+			name = WireGuardKit;
+			path = Vendor/WireGuard/Sources;
+			sourceTree = "<group>";
+		};
+		10986E9852EF116279469F7C /* docs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = docs;
+			path = docs;
+			sourceTree = "<group>";
+		};
+		2364D1BC9A4EE9B7E10F1C85 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Config;
+			path = Config;
+			sourceTree = "<group>";
+		};
+		5D983D9E3DE539BED51004DD /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = scripts;
+			path = scripts;
+			sourceTree = "<group>";
+		};
+		68625876F244F018730E6156 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				90DB759AE74ABB5A604914C3 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		6A4836B1129ECE271180A152 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				68625876F244F018730E6156 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6DC1FC9ACDE6872FEA3CE369 /* Tunnel */ = {
+			isa = PBXGroup;
+			children = (
+				ACC3E4C3BE8F0930CD4AE19B /* PacketTunnelProvider.swift */,
+			);
+			name = Tunnel;
+			path = Tunnel;
+			sourceTree = "<group>";
+		};
+		8E588BD6051FB8A9A747BA3E /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				EE37A920B6577C09339D178E /* MoleyUITests.swift */,
+			);
+			name = UITests;
+			path = UITests;
+			sourceTree = "<group>";
+		};
+		95A8BF21FAD5C9F5AFE08B2F = {
+			isa = PBXGroup;
+			children = (
+				B9BC40F8543B0E5EBFAC454E /* Products */,
+				6A4836B1129ECE271180A152 /* Frameworks */,
+				DBB2F2267EB5AA5FCF9D1A99 /* Project.xcconfig */,
+				0FE8C2BDEEE36EE7E246A4A9 /* WireGuardKit */,
+				F376F1A79FC8978CD800509E /* App */,
+				CB0645F332903ED2786F55F3 /* Shared */,
+				6DC1FC9ACDE6872FEA3CE369 /* Tunnel */,
+				B09BD84F05BDA11A6424BAFD /* Tests */,
+				8E588BD6051FB8A9A747BA3E /* UITests */,
+				2364D1BC9A4EE9B7E10F1C85 /* Config */,
+				5D983D9E3DE539BED51004DD /* scripts */,
+				10986E9852EF116279469F7C /* docs */,
+			);
+			sourceTree = "<group>";
+		};
+		B09BD84F05BDA11A6424BAFD /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				2FA1AA752B44CEF8C022A2FE /* WireGuardProfileTests.swift */,
+			);
+			name = Tests;
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		B9BC40F8543B0E5EBFAC454E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F1125C7B7532312C11BE3F29 /* Moley.app */,
+				156FE8561CC2D1E0294B093A /* MoleyTunnel.appex */,
+				F4FE504D6D4914BD1C29A751 /* MoleyTests.xctest */,
+				DE88F507C6B5BE65518971F2 /* MoleyUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CB0645F332903ED2786F55F3 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				6996E058B423F6AF94B06FB3 /* ProfileKeychain.swift */,
+				46B03520FC846D55106DC15D /* TunnelHealth.swift */,
+				59D4F5453F2213B43611E960 /* WireGuardProfile.swift */,
+			);
+			name = Shared;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		F376F1A79FC8978CD800509E /* App */ = {
+			isa = PBXGroup;
+			children = (
+				81E6C5A7A0D0DD94B5FC1DE6 /* HomeView.swift */,
+				0E46E2D0242621C13FCBA8B6 /* ImportProfileView.swift */,
+				7E0BFBC34B9A56997A885083 /* MoleyApp.swift */,
+				0FBD27CF9152ABFE0BC30A0F /* VPNController.swift */,
+				8311F6BDC8B925EB33049345 /* Assets.xcassets */,
+			);
+			name = App;
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1DB76847A1785EA0921D904A /* MoleyUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BDB314045090CE17207203DB /* Build configuration list for PBXNativeTarget "MoleyUITests" */;
+			buildPhases = (
+				DADCDDC8FF55C5FBAB7F8F52 /* Sources */,
+				1BEB76B7C2168ED49E73F7F0 /* Frameworks */,
+				E5AE1CC6C9A343983B3F5460 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A887A878846FFFDE07067E6A /* PBXTargetDependency */,
+			);
+			name = MoleyUITests;
+			productName = MoleyUITests;
+			productReference = DE88F507C6B5BE65518971F2 /* MoleyUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		3135BD5490E1F3695DA2EF4F /* MoleyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 566DB2CA7E638A4F766A475A /* Build configuration list for PBXNativeTarget "MoleyTests" */;
+			buildPhases = (
+				DC87166BF5198656A2A39CF5 /* Sources */,
+				8BA753DAD25A210C2F60778C /* Frameworks */,
+				4C4B909CE51FE1A1DBF76540 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D77334DF9C0BBB7A7843A8E7 /* PBXTargetDependency */,
+			);
+			name = MoleyTests;
+			productName = MoleyTests;
+			productReference = F4FE504D6D4914BD1C29A751 /* MoleyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		57300A5517E340559B573991 /* MoleyTunnel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4BC84AE2BACA05CC3B5A75A9 /* Build configuration list for PBXNativeTarget "MoleyTunnel" */;
+			buildPhases = (
+				B4D1C29295C121C9918849CC /* Sources */,
+				9FDF813E7C4D47415174D3C0 /* Frameworks */,
+				1D584C4FB00787FD2711773E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A626B3D4FF0A3E4F21C28C58 /* PBXTargetDependency */,
+			);
+			name = MoleyTunnel;
+			productName = MoleyTunnel;
+			productReference = 156FE8561CC2D1E0294B093A /* MoleyTunnel.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		D38412E8FF3AA3AC6D4A69C5 /* Moley */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BEF6845FF4D2634727FEE3E9 /* Build configuration list for PBXNativeTarget "Moley" */;
+			buildPhases = (
+				746510F0DD2D2C3E1FE073E0 /* Sources */,
+				2B218F5A0A4CC70AC09D1B29 /* Frameworks */,
+				1DC079E018A7210CFFB45761 /* Resources */,
+				257F23BF1DD0D74541FB920B /* Embed VPN Extension */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				83869BFC3A9591D9D02CDE4F /* PBXTargetDependency */,
+				68BEB0E4018836F01E261D14 /* PBXTargetDependency */,
+			);
+			name = Moley;
+			productName = Moley;
+			productReference = F1125C7B7532312C11BE3F29 /* Moley.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4AE36AF5A88D0147FF9B3EE3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = F8101768D9CB6DD53A799CD2 /* Build configuration list for PBXProject "Moley" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 95A8BF21FAD5C9F5AFE08B2F;
+			minimizedProjectReferenceProxies = 0;
+			preferredProjectObjectVersion = 100;
+			productRefGroup = B9BC40F8543B0E5EBFAC454E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D38412E8FF3AA3AC6D4A69C5 /* Moley */,
+				57300A5517E340559B573991 /* MoleyTunnel */,
+				3135BD5490E1F3695DA2EF4F /* MoleyTests */,
+				1DB76847A1785EA0921D904A /* MoleyUITests */,
+				6646B9F7913DC2D89AEE2029 /* WireGuardGoBridge */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D584C4FB00787FD2711773E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1DC079E018A7210CFFB45761 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FA634D3E53A33586679CDB /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4C4B909CE51FE1A1DBF76540 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5AE1CC6C9A343983B3F5460 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A7542DCEFA7337FE81384C0E /* Build WireGuard Go backend */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build WireGuard Go backend";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${SRCROOT}/scripts/build-wireguard.sh\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		746510F0DD2D2C3E1FE073E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6751FBFE6BE0D1DB4D21292 /* Array+ConcurrentMap.swift in Sources */,
+				D543F99CFFE1F088A108591A /* DNSResolver.swift in Sources */,
+				51AD0C3D8E219B138E36A884 /* DNSServer.swift in Sources */,
+				61FEBCB1022CB378FCCC66BE /* Endpoint.swift in Sources */,
+				672E815C7BE5A7496A396429 /* IPAddress+AddrInfo.swift in Sources */,
+				633FAAE588CE3608642738C5 /* IPAddressRange.swift in Sources */,
+				D9CBAA099EC4413400294359 /* InterfaceConfiguration.swift in Sources */,
+				F511423BC72EBC2B1C38065F /* PacketTunnelSettingsGenerator.swift in Sources */,
+				C8C8CBE4A4998BAB14116313 /* PeerConfiguration.swift in Sources */,
+				D84BCD26CB8C6B06C13F406B /* PrivateKey.swift in Sources */,
+				87D69A41736BD546CD691093 /* TunnelConfiguration.swift in Sources */,
+				75824476D8CF058E5F73C7C2 /* WireGuardAdapter.swift in Sources */,
+				C6D4CD6782A35ADD77BA804F /* key.c in Sources */,
+				CDCC32A857AEB65BFD7B5665 /* x25519.c in Sources */,
+				45C618F680456FFDEBF66CD2 /* HomeView.swift in Sources */,
+				A965FD3BC1710FAE812F00DB /* ImportProfileView.swift in Sources */,
+				9B375F1328AB19FEA69F8DBB /* MoleyApp.swift in Sources */,
+				B9D141737764F91E569E447F /* VPNController.swift in Sources */,
+				B60258204C40DF6FC1E7E665 /* ProfileKeychain.swift in Sources */,
+				7808665EB799CD4D7B8D59A6 /* TunnelHealth.swift in Sources */,
+				577682346B01D211DDCE1DAE /* WireGuardProfile.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4D1C29295C121C9918849CC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2097B80CFA2CE00CD04F20EF /* Array+ConcurrentMap.swift in Sources */,
+				E490A9EAC6A4D0B6FBBD5C76 /* DNSResolver.swift in Sources */,
+				DD0A9B760935533DBC0FE775 /* DNSServer.swift in Sources */,
+				92E5380B973E8EF44F382AFE /* Endpoint.swift in Sources */,
+				F351842ED12EA57C8FDE0DF5 /* IPAddress+AddrInfo.swift in Sources */,
+				5B85FB24B2D9954E7595C020 /* IPAddressRange.swift in Sources */,
+				31B679F58BDCE8E11E82B9CB /* InterfaceConfiguration.swift in Sources */,
+				163EA983F3B455D1A84DCEE2 /* PacketTunnelSettingsGenerator.swift in Sources */,
+				B238524678017FB105DE47AE /* PeerConfiguration.swift in Sources */,
+				E064F9CF54E86463A30C1D3A /* PrivateKey.swift in Sources */,
+				A66013DB682D30FE6E39CA2A /* TunnelConfiguration.swift in Sources */,
+				A373723914344B9244F78F8A /* WireGuardAdapter.swift in Sources */,
+				C0B58A2B0F5BE29EEC423E07 /* key.c in Sources */,
+				04B9ED8935F49FC7001F0F45 /* x25519.c in Sources */,
+				1AB19756B57D778952F717CA /* ProfileKeychain.swift in Sources */,
+				2018436CB9B06367E319C9E2 /* TunnelHealth.swift in Sources */,
+				DD18EA96DAD5C58C3585ED01 /* WireGuardProfile.swift in Sources */,
+				ADFC83D14516BD14D92F6CE7 /* PacketTunnelProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DADCDDC8FF55C5FBAB7F8F52 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA8F6383A2C9BBFEE87CB17D /* MoleyUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DC87166BF5198656A2A39CF5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C5BE8222A5B2FD189607FAA6 /* WireGuardProfileTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		68BEB0E4018836F01E261D14 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MoleyTunnel;
+			target = 57300A5517E340559B573991 /* MoleyTunnel */;
+			targetProxy = 60B0ADB4C35D6C22B3DF26C5 /* PBXContainerItemProxy */;
+		};
+		83869BFC3A9591D9D02CDE4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WireGuardGoBridge;
+			target = 6646B9F7913DC2D89AEE2029 /* WireGuardGoBridge */;
+			targetProxy = CD0E586B1AC2F2A6C69AC936 /* PBXContainerItemProxy */;
+		};
+		A626B3D4FF0A3E4F21C28C58 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WireGuardGoBridge;
+			target = 6646B9F7913DC2D89AEE2029 /* WireGuardGoBridge */;
+			targetProxy = D9189765FF57AA39EC135D1D /* PBXContainerItemProxy */;
+		};
+		A887A878846FFFDE07067E6A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Moley;
+			target = D38412E8FF3AA3AC6D4A69C5 /* Moley */;
+			targetProxy = 45084EE2AC244C4B5F62F46C /* PBXContainerItemProxy */;
+		};
+		D77334DF9C0BBB7A7843A8E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Moley;
+			target = D38412E8FF3AA3AC6D4A69C5 /* Moley */;
+			targetProxy = 1743F604846ADADFCA480931 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		12BABA7F61A3966E865C5216 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DBB2F2267EB5AA5FCF9D1A99 /* Project.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		1DA8003A948FA74459AF635B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+			};
+			name = Release;
+		};
+		30249F56210763E2F7EB6D70 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = Config/Moley.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Config/Tunnel-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lwg-go",
+					"-lresolv",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID).tunnel";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Config/WireGuard-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3CBE3EDFECF5B33730AF183D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = Config/Moley.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Config/Tunnel-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lwg-go",
+					"-lresolv",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID).tunnel";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Config/WireGuard-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		59153AE1C7BCD2A89DDC2803 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID).uitests";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Moley;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5C638BB45EE2C88427EDEA6C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID).tests";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Moley.app/Moley";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6FDD32A3926F0AC04D144A9C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID).tests";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Moley.app/Moley";
+			};
+			name = Debug;
+		};
+		8CFED5585BC649765F4FA215 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+			};
+			name = Debug;
+		};
+		C69E14254493C2FB9277C578 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DBB2F2267EB5AA5FCF9D1A99 /* Project.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D152F211D6E7700EB5E7DA9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID).uitests";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Moley;
+			};
+			name = Debug;
+		};
+		D1B70EE8C423781BC92D8642 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = Config/Moley.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Config/App-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lwg-go",
+					"-lresolv",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Config/WireGuard-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D54557587F51E39E54488113 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = Config/Moley.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Config/App-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lwg-go",
+					"-lresolv",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Config/WireGuard-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4BC84AE2BACA05CC3B5A75A9 /* Build configuration list for PBXNativeTarget "MoleyTunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CBE3EDFECF5B33730AF183D /* Release */,
+				30249F56210763E2F7EB6D70 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		566DB2CA7E638A4F766A475A /* Build configuration list for PBXNativeTarget "MoleyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C638BB45EE2C88427EDEA6C /* Release */,
+				6FDD32A3926F0AC04D144A9C /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6B9298F0C684B48615BAED07 /* Build configuration list for PBXAggregateTarget "WireGuardGoBridge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DA8003A948FA74459AF635B /* Release */,
+				8CFED5585BC649765F4FA215 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BDB314045090CE17207203DB /* Build configuration list for PBXNativeTarget "MoleyUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				59153AE1C7BCD2A89DDC2803 /* Release */,
+				D152F211D6E7700EB5E7DA9A /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BEF6845FF4D2634727FEE3E9 /* Build configuration list for PBXNativeTarget "Moley" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D54557587F51E39E54488113 /* Release */,
+				D1B70EE8C423781BC92D8642 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8101768D9CB6DD53A799CD2 /* Build configuration list for PBXProject "Moley" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C69E14254493C2FB9277C578 /* Debug */,
+				12BABA7F61A3966E865C5216 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4AE36AF5A88D0147FF9B3EE3 /* Project object */;
+}
