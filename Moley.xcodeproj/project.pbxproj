@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -16,6 +16,7 @@
 			dependencies = (
 			);
 			name = WireGuardGoBridge;
+			productName = WireGuardGoBridge;
 		};
 /* End PBXAggregateTarget section */
 
@@ -147,9 +148,9 @@
 		BCCA65FD7FEC03EB72E0FC48 /* PrivateKey.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PrivateKey.swift; path = WireGuardKit/PrivateKey.swift; sourceTree = "<group>"; };
 		D7E893C7AAAA80E8E812C43A /* InterfaceConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InterfaceConfiguration.swift; path = WireGuardKit/InterfaceConfiguration.swift; sourceTree = "<group>"; };
 		DBB2F2267EB5AA5FCF9D1A99 /* Project.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Project.xcconfig; path = Config/Project.xcconfig; sourceTree = "<group>"; };
-		DE2C45D1066FC7987B29FAD7 /* key.c */ = {isa = PBXFileReference; includeInIndex = 1; name = key.c; path = WireGuardKitC/key.c; sourceTree = "<group>"; };
+		DE2C45D1066FC7987B29FAD7 /* key.c */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.c; name = key.c; path = WireGuardKitC/key.c; sourceTree = "<group>"; };
 		DE88F507C6B5BE65518971F2 /* MoleyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoleyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E71296AA3347BEB502C46EB9 /* x25519.c */ = {isa = PBXFileReference; includeInIndex = 1; name = x25519.c; path = WireGuardKitC/x25519.c; sourceTree = "<group>"; };
+		E71296AA3347BEB502C46EB9 /* x25519.c */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.c; name = x25519.c; path = WireGuardKitC/x25519.c; sourceTree = "<group>"; };
 		EE37A920B6577C09339D178E /* MoleyUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MoleyUITests.swift; sourceTree = "<group>"; };
 		F1125C7B7532312C11BE3F29 /* Moley.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moley.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4FE504D6D4914BD1C29A751 /* MoleyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoleyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -217,7 +218,6 @@
 			isa = PBXGroup;
 			children = (
 			);
-			name = docs;
 			path = docs;
 			sourceTree = "<group>";
 		};
@@ -225,7 +225,6 @@
 			isa = PBXGroup;
 			children = (
 			);
-			name = Config;
 			path = Config;
 			sourceTree = "<group>";
 		};
@@ -233,7 +232,6 @@
 			isa = PBXGroup;
 			children = (
 			);
-			name = scripts;
 			path = scripts;
 			sourceTree = "<group>";
 		};
@@ -258,7 +256,6 @@
 			children = (
 				ACC3E4C3BE8F0930CD4AE19B /* PacketTunnelProvider.swift */,
 			);
-			name = Tunnel;
 			path = Tunnel;
 			sourceTree = "<group>";
 		};
@@ -267,7 +264,6 @@
 			children = (
 				EE37A920B6577C09339D178E /* MoleyUITests.swift */,
 			);
-			name = UITests;
 			path = UITests;
 			sourceTree = "<group>";
 		};
@@ -294,7 +290,6 @@
 			children = (
 				2FA1AA752B44CEF8C022A2FE /* WireGuardProfileTests.swift */,
 			);
-			name = Tests;
 			path = Tests;
 			sourceTree = "<group>";
 		};
@@ -316,7 +311,6 @@
 				46B03520FC846D55106DC15D /* TunnelHealth.swift */,
 				59D4F5453F2213B43611E960 /* WireGuardProfile.swift */,
 			);
-			name = Shared;
 			path = Shared;
 			sourceTree = "<group>";
 		};
@@ -329,7 +323,6 @@
 				0FBD27CF9152ABFE0BC30A0F /* VPNController.swift */,
 				8311F6BDC8B925EB33049345 /* Assets.xcassets */,
 			);
-			name = App;
 			path = App;
 			sourceTree = "<group>";
 		};
@@ -428,8 +421,6 @@
 				Base,
 			);
 			mainGroup = 95A8BF21FAD5C9F5AFE08B2F;
-			minimizedProjectReferenceProxies = 0;
-			preferredProjectObjectVersion = 100;
 			productRefGroup = B9BC40F8543B0E5EBFAC454E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -877,11 +868,15 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = Config/Moley.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2U5R5BXJ37;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/App-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lwg-go",
@@ -904,11 +899,15 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = Config/Moley.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2U5R5BXJ37;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/App-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lwg-go",

@@ -18,9 +18,11 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     VStack(spacing: 12) {
-                        Image(systemName: vpn.status == .connected ? "network.badge.shield.half.filled" : "network")
-                            .font(.system(size: 60, weight: .light))
-                            .foregroundStyle(.teal)
+                        Image("MoleyLogo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 112, height: 112)
+                            .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
                             .accessibilityHidden(true)
                         Text("A little closer to home.")
                             .font(.largeTitle.bold())
