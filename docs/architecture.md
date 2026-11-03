@@ -9,9 +9,9 @@ SwiftUI app
   v
 PacketTunnelProvider
   | reads its profile from shared Keychain
-  | starts official WireGuardKit adapter + wireguard-go
+  | starts WireGuardKit adapter + pinned amneziawg-go
   v
-iOS packet tunnel -- encrypted UDP --> AWS US WireGuard gateway
+iOS packet tunnel -- obfuscated encrypted UDP --> AWS US AmneziaWG gateway
                                          |
                                          +-- public internet via IPv4 NAT
                                          +-- private/VPC/metadata access denied
@@ -19,7 +19,8 @@ iOS packet tunnel -- encrypted UDP --> AWS US WireGuard gateway
 ```
 
 - `App/`: user interface and system VPN lifecycle. One saved Moley profile.
-- `Shared/WireGuardProfile.swift`: strict, non-executable WireGuard client format.
+- `Shared/WireGuardProfile.swift`: strict, non-executable AmneziaWG/WireGuard
+  client format, including bounded padding, ranges and signature validation.
 - `Shared/ProfileKeychain.swift`: device-only secret storage and persistent refs.
 - `Shared/TunnelHealth.swift`: allowlisted runtime diagnostics with no secrets.
 - `Tunnel/`: network extension. The tunnel runs independently of the app process.
@@ -35,10 +36,19 @@ There is currently no enrollment API, login, server inventory, certificate
 infrastructure, or family member database. Profiles are provisioned manually.
 This keeps VPN keys independent from any eventual web application.
 
+AmneziaWG settings reach the backend as device-level UAPI fields; they are not
+HTTP/TLS wrappers. The adapter retains these settings on network-change restarts.
+The startup TUN wrapper prevents the first IP packet from using an old padding
+offset. Legacy WireGuard configurations are explicitly labeled unobfuscated;
+there is no automatic fallback from a failed AmneziaWG connection to WireGuard.
+See [the protocol notes](amneziawg.md) for supported versions and boundaries.
+
 ## Non-iPhone Family Members Today
 
-Android, Windows, macOS, and Linux can use official WireGuard clients against
-the same gateway, each with a unique key and address. They do not need a custom
+Android, Windows, macOS, and Linux can use compatible AmneziaWG clients against
+the same gateway, each with a unique key and address and matching obfuscation
+settings. Standard WireGuard clients only work with an unobfuscated WireGuard
+server profile. Other devices do not need a custom
 Moley port to get access. This is the simplest near-term cross-platform path.
 
 ## Browser-Only Access Later
@@ -96,7 +106,9 @@ equivalent general-purpose replacement for this VPN.
 When manual files become inconvenient, add a small authenticated control plane:
 the phone generates its private key locally, submits only the public key with a
 one-time invitation, and receives its address, server public key, endpoint and
-DNS settings. The server allocates unique peer addresses and supports revocation.
+DNS and versioned AmneziaWG settings. The server allocates unique peer addresses
+and supports revocation. Shared header-protection keys need private delivery and
+coordinated rotation, distinct from each device's private WireGuard key.
 Use HTTPS, replay-resistant invitations, authorization, and audit events without
 secret payloads. Do not reuse remote-browser session tokens as VPN keys.
 

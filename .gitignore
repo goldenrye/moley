@@ -10,3 +10,4 @@ DerivedData/
 *.p12
 *.mobileprovision
 .env
+.vscode/

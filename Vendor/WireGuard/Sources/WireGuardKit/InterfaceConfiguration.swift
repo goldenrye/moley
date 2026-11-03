@@ -11,6 +11,8 @@ public struct InterfaceConfiguration {
     public var mtu: UInt16?
     public var dns = [DNSServer]()
     public var dnsSearch = [String]()
+    /// Validated AmneziaWG device-level UAPI values, supplied by the importer.
+    public var amneziaSettings = [String: String]()
 
     public init(privateKey: PrivateKey) {
         self.privateKey = privateKey
@@ -27,6 +29,7 @@ extension InterfaceConfiguration: Equatable {
             lhs.listenPort == rhs.listenPort &&
             lhs.mtu == rhs.mtu &&
             lhs.dns == rhs.dns &&
-            lhs.dnsSearch == rhs.dnsSearch
+            lhs.dnsSearch == rhs.dnsSearch &&
+            lhs.amneziaSettings == rhs.amneziaSettings
     }
 }

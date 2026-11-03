@@ -20,14 +20,16 @@ struct ImportProfileView: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("Ask your family administrator for your personal WireGuard .conf file. Never share your file with another device.")
+                    Text("Ask your family administrator for your personal AmneziaWG .conf file. Its obfuscation settings must match the server. Never share your file with another device.")
+                    Text("Standard WireGuard files still work, but do not enable obfuscation.")
+                        .font(.footnote).foregroundStyle(.secondary)
                     Button("Choose configuration file", systemImage: "doc.badge.plus") { draft.showingFilePicker = true }
                         .accessibilityIdentifier("chooseFileButton")
                     PasteButton(payloadType: String.self) { strings in
                         guard let candidate = strings.first else { return }
                         setText(candidate)
                     }
-                    .accessibilityLabel("Paste WireGuard configuration")
+                    .accessibilityLabel("Paste VPN configuration")
                 } header: { Text("Your invitation") }
 
                 Section {
@@ -45,7 +47,7 @@ struct ImportProfileView: View {
                             .textInputAutocapitalization(.never)
                             .frame(minHeight: 220)
                             .privacySensitive()
-                            .accessibilityLabel("WireGuard configuration")
+                            .accessibilityLabel("VPN configuration")
                             .accessibilityIdentifier("configurationEditor")
                             .onChange(of: draft.text) { _, value in
                                 if value.utf8.count > WireGuardProfile.maximumSize {
@@ -95,7 +97,7 @@ struct ImportProfileView: View {
                     let data = try handle.read(upToCount: WireGuardProfile.maximumSize + 1) ?? Data()
                     guard data.count <= WireGuardProfile.maximumSize,
                           let candidate = String(data: data, encoding: .utf8) else {
-                        throw ProfileError(message: "Choose a UTF-8 WireGuard configuration up to 32 KB.")
+                        throw ProfileError(message: "Choose a UTF-8 AmneziaWG or WireGuard configuration up to 32 KB.")
                     }
                     setText(candidate)
                 } catch { draft.localError = "Could not import the configuration. \(error.localizedDescription)" }

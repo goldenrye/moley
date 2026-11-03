@@ -25,7 +25,7 @@ build: $(DESTDIR)/libwg-go.a
 version-header: $(DESTDIR)/wireguard-go-version.h
 
 REAL_GOROOT := $(shell go env GOROOT 2>/dev/null)
-export GOROOT := $(BUILDDIR)/goroot
+export GOROOT := $(BUILDDIR)/goroot-$(shell go env GOVERSION)
 $(GOROOT)/.prepared:
 	[ -n "$(REAL_GOROOT)" ]
 	mkdir -p "$(GOROOT)"
@@ -39,14 +39,14 @@ $(BUILDDIR)/libwg-go-$(1).a: export CGO_CFLAGS := $(CFLAGS_PREFIX) $(ARCH)
 $(BUILDDIR)/libwg-go-$(1).a: export CGO_LDFLAGS := $(CFLAGS_PREFIX) $(ARCH)
 $(BUILDDIR)/libwg-go-$(1).a: export GOOS := $(GOOS_$(PLATFORM_NAME))
 $(BUILDDIR)/libwg-go-$(1).a: export GOARCH := $(GOARCH_$(1))
-$(BUILDDIR)/libwg-go-$(1).a: $(GOROOT)/.prepared go.mod
-	go build -ldflags=-w -trimpath -v -o "$(BUILDDIR)/libwg-go-$(1).a" -buildmode c-archive
+$(BUILDDIR)/libwg-go-$(1).a: $(GOROOT)/.prepared go.mod go.sum $(wildcard *.go) Makefile
+	go build -mod=readonly -ldflags=-w -trimpath -v -o "$(BUILDDIR)/libwg-go-$(1).a" -buildmode c-archive
 	rm -f "$(BUILDDIR)/libwg-go-$(1).h"
 endef
 $(foreach ARCH,$(ARCHS),$(eval $(call libwg-go-a,$(ARCH))))
 
 $(DESTDIR)/wireguard-go-version.h: go.mod $(GOROOT)/.prepared
-	 sed -E -n 's/.*golang\.zx2c4\.com\/wireguard +v[0-9.]+-[0-9]+-([0-9a-f]{8})[0-9a-f]{4}.*/#define WIREGUARD_GO_VERSION "\1"/p' "$<" > "$@"
+	 awk '/github.com\/amnezia-vpn\/amneziawg-go\/v3 / { printf("#define WIREGUARD_GO_VERSION \"%s\"\n", $$2) }' "$<" > "$@"
 
 $(DESTDIR)/libwg-go.a: $(foreach ARCH,$(ARCHS),$(BUILDDIR)/libwg-go-$(ARCH).a)
 	@mkdir -vp "$(DESTDIR)"

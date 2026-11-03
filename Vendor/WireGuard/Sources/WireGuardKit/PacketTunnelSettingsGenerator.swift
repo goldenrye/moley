@@ -47,6 +47,10 @@ class PacketTunnelSettingsGenerator {
         if let listenPort = tunnelConfiguration.interface.listenPort {
             wgSettings.append("listen_port=\(listenPort)\n")
         }
+        // These must precede the first public_key, which switches UAPI to peer scope.
+        for key in tunnelConfiguration.interface.amneziaSettings.keys.sorted() {
+            wgSettings.append("\(key)=\(tunnelConfiguration.interface.amneziaSettings[key]!)\n")
+        }
         if !tunnelConfiguration.peers.isEmpty {
             wgSettings.append("replace_peers=true\n")
         }

@@ -5,7 +5,7 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
     private let logger = Logger(subsystem: "Moley", category: "Tunnel")
     private lazy var adapter = WireGuardAdapter(with: self) { [weak self] level, _ in
         // Never persist backend strings: they may contain endpoint/configuration data.
-        if level == .error { self?.logger.error("WireGuard reported a backend error.") }
+        if level == .error { self?.logger.error("AmneziaWG reported a backend error.") }
     }
 
     override func startTunnel(options: [String: NSObject]?, completionHandler: @escaping (Error?) -> Void) {
@@ -24,7 +24,7 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
                 case .setNetworkSettings:
                     message = "iOS could not install the VPN routes."
                 case .cannotLocateTunnelFileDescriptor, .startWireGuardBackend, .invalidState:
-                    message = "The WireGuard tunnel could not start. Disconnect and try again."
+                    message = "The AmneziaWG backend could not start. Check the profile settings, disconnect and try again."
                 }
                 completionHandler(ProfileError(message: message))
             }

@@ -72,6 +72,12 @@ struct HomeView: View {
                         VStack(alignment: .leading, spacing: 18) {
                             Label("Your server", systemImage: "server.rack").font(.headline)
                             Text(vpn.endpoint).font(.callout.monospaced()).textSelection(.enabled)
+                            Label(vpn.transportName, systemImage: "network")
+                                .accessibilityIdentifier("transportName")
+                            if vpn.transportName != "AmneziaWG" {
+                                Text("This profile has no traffic obfuscation. Import a matching AmneziaWG server configuration to enable it.")
+                                    .font(.footnote).foregroundStyle(.orange)
+                            }
                             Toggle("Connect automatically", isOn: Binding(
                                 get: { vpn.autoConnect },
                                 set: { enabled in
@@ -100,6 +106,7 @@ struct HomeView: View {
                         Label("Private by design", systemImage: "key.fill").font(.headline)
                         Text("Your VPN key stays in this iPhone's Keychain. Moley has no analytics or account service.")
                         Text("The server operator and DNS provider can see connection metadata. Use HTTPS for websites.")
+                        Text("AmneziaWG changes recognizable traffic patterns, but cannot guarantee access or make VPN use undetectable. It still uses UDP.")
                         Text("This is not an always-on kill switch. When the VPN is off, traffic uses your normal network. Some iOS system traffic may bypass VPN routes.")
                     }
                     .font(.footnote)

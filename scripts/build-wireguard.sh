@@ -3,6 +3,12 @@ set -euo pipefail
 
 export PATH="${MOLEY_GO_BIN:-/opt/homebrew/bin}:/opt/homebrew/bin:/usr/local/bin:$PATH"
 command -v go >/dev/null || { echo "error: Install Go and set MOLEY_GO_BIN in Config/Local.xcconfig."; exit 1; }
+export GOTOOLCHAIN=local
+go_version="$(go env GOVERSION)"
+if [[ ! "$go_version" =~ ^go1\.([0-9]+) ]] || (( BASH_REMATCH[1] < 25 )); then
+    echo "error: AmneziaWG requires Go 1.25 or newer. Update MOLEY_GO_BIN in Config/Local.xcconfig."
+    exit 1
+fi
 
 source_dir="${SRCROOT}/Vendor/WireGuard/Sources/WireGuardKitGo"
 if [[ ! -f "$source_dir/Makefile" ]]; then
@@ -10,7 +16,7 @@ if [[ ! -f "$source_dir/Makefile" ]]; then
     exit 1
 fi
 
-# The upstream bridge needs a patched Go runtime so timers include device sleep.
+# The AmneziaWG bridge needs a patched Go runtime so timers include device sleep.
 # Keep its GOROOT isolated from the installed Go toolchain.
 case "$PLATFORM_NAME" in
     iphoneos) target="apple-ios${IPHONEOS_DEPLOYMENT_TARGET}" ;;

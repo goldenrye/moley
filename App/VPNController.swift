@@ -7,6 +7,7 @@ final class VPNController: ObservableObject {
     @Published private(set) var status: NEVPNStatus = .invalid
     @Published private(set) var hasProfile = false
     @Published private(set) var endpoint = ""
+    @Published private(set) var transportName = "WireGuard (unobfuscated)"
     @Published private(set) var isBusy = false
     @Published private(set) var isLoaded = false
     @Published private(set) var autoConnect = false
@@ -92,6 +93,8 @@ final class VPNController: ObservableObject {
             settings.providerBundleIdentifier = providerID
             settings.serverAddress = profile.endpoint
             settings.passwordReference = reference
+            // Only a display label goes in preferences; all protocol secrets stay in Keychain.
+            settings.providerConfiguration = ["transport": profile.transportName]
             settings.disconnectOnSleep = false
             current.protocolConfiguration = settings
             current.localizedDescription = "Moley"
@@ -210,6 +213,8 @@ final class VPNController: ObservableObject {
         status = manager?.connection.status ?? .invalid
         hasProfile = manager != nil
         endpoint = manager?.protocolConfiguration?.serverAddress ?? ""
+        let settings = manager?.protocolConfiguration as? NETunnelProviderProtocol
+        transportName = settings?.providerConfiguration?["transport"] as? String ?? "WireGuard (unobfuscated)"
         autoConnect = manager?.isOnDemandEnabled ?? false
         if status != .connected {
             health = nil

@@ -123,4 +123,142 @@ final class WireGuardProfileTests: XCTestCase {
         XCTAssertEqual(health.sentBytes, 0)
         XCTAssertNil(health.lastHandshake)
     }
+
+    private var awgFields: String {
+        """
+        Jc = 4
+        Jmin = 40
+        Jmax = 80
+        S1 = 32
+        S2 = 48
+        S3 = 16
+        S4 = 16
+        H1 = 100001-100010
+        H2 = 200001-200010
+        H3 = 300001-300010
+        H4 = 400001-400010
+        I1 = <b 0xAABB><r 10><rd 5><rc 5><t>
+        """
+    }
+
+    private func amnezia(_ fields: String? = nil) -> String {
+        valid.replacingOccurrences(of: "[Peer]", with: (fields ?? awgFields) + "\n[Peer]")
+    }
+
+    func testLegacyProfileExplicitlyUnobfuscated() throws {
+        let profile = try WireGuardProfile(text: valid)
+        XCTAssertFalse(profile.isObfuscated)
+        XCTAssertEqual(profile.transportName, "WireGuard (unobfuscated)")
+        XCTAssertTrue(profile.configuration.interface.amneziaSettings.isEmpty)
+    }
+
+    func testAmneziaSettingsReachDeviceUAPI() throws {
+        let profile = try WireGuardProfile(text: amnezia())
+        XCTAssertTrue(profile.isObfuscated)
+        XCTAssertEqual(profile.transportName, "AmneziaWG")
+        let generator = PacketTunnelSettingsGenerator(tunnelConfiguration: profile.configuration, resolvedEndpoints: [nil])
+        let (uapi, _) = generator.uapiConfiguration()
+        let devicePart = String(uapi.prefix(upTo: uapi.range(of: "public_key=")!.lowerBound))
+        for line in ["jc=4\n", "s1=32\n", "s4=16\n", "h1=100001-100010\n",
+                     "i1=<b 0xaabb><r 10><rd 5><rc 5><t>\n"] {
+            XCTAssertTrue(devicePart.contains(line))
+        }
+        // Endpoint refresh must not reset obfuscation parameters.
+        XCTAssertFalse(generator.endpointUapiConfiguration().0.contains("s1="))
+    }
+
+    func testAmneziaOlderProfileWithScalarHeaders() throws {
+        let fields = awgFields
+            .replacingOccurrences(of: "S3 = 16\nS4 = 16\n", with: "")
+            .replacingOccurrences(of: "100001-100010", with: "4294967295")
+        let config = try WireGuardProfile(text: amnezia(fields)).configuration.interface.amneziaSettings
+        XCTAssertEqual(config["s3"], "0")
+        XCTAssertEqual(config["s4"], "0")
+        XCTAssertEqual(config["h1"], "4294967295")
+    }
+
+    func testIncompleteAmneziaDoesNotFallBack() {
+        for key in AmneziaSettings.required {
+            let fields = awgFields.components(separatedBy: "\n")
+                .filter { !$0.lowercased().hasPrefix(key + " =") }.joined(separator: "\n")
+            XCTAssertThrowsError(try WireGuardProfile(text: amnezia(fields)))
+        }
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia("S4 = 16")))
+    }
+
+    func testAmneziaHeaderRangesRejectOverlapAndWireGuardDefaults() {
+        for value in ["1", "0-5", "200010-200020", "20-10", "4294967296", "-1", "5-6-7", "5\npublic_key=secret"] {
+            XCTAssertThrowsError(try WireGuardProfile(text: amnezia(awgFields.replacingOccurrences(
+                of: "100001-100010", with: value
+            ))))
+        }
+    }
+
+    func testAmneziaJunkBoundsAndPaddingCollision() {
+        for (before, after) in [
+            ("Jc = 4", "Jc = 33"), ("Jc = 4", "Jc = -1"),
+            ("Jmin = 40", "Jmin = 0"), ("Jmax = 80", "Jmax = 20"),
+            ("Jmax = 80", "Jmax = 1281"), ("S1 = 32", "S1 = 1025"),
+            ("S2 = 48", "S2 = 88"), ("S4 = 16", "S4 = 129")
+        ] {
+            XCTAssertThrowsError(try WireGuardProfile(text: amnezia(awgFields.replacingOccurrences(of: before, with: after))))
+        }
+    }
+
+    func testAmneziaMTUBudget() {
+        let fields = awgFields.replacingOccurrences(of: "S4 = 16", with: "S4 = 128")
+        XCTAssertNoThrow(try WireGuardProfile(text: amnezia(fields)))
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia(fields).replacingOccurrences(of: "MTU = 1280", with: "MTU = 1420")))
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia(fields + "\nContentPaddingAddition = 16")))
+    }
+
+    func testAmneziaSignaturesRejectMalformedOrOversizedInput() {
+        for value in ["<r -1>", "<r 999999999999999999999>", "<r 1281>", "<r 1000><r 300>",
+                      "<b 0xABC>", "<b 0xGG>", "<t extra>", "<r 4>junk", "no tags",
+                      "<r 4", "<unknown 2>", "<d>", "<r 0>"] {
+            let fields = awgFields.replacingOccurrences(of: "<b 0xAABB><r 10><rd 5><rc 5><t>", with: value)
+            XCTAssertThrowsError(try WireGuardProfile(text: amnezia(fields)))
+        }
+    }
+
+    func testAmneziaV3HeaderKeyAndContentPadding() throws {
+        let fields = awgFields + "\nHeaderProtectionKey = \(key)\nContentPaddingAddition = 16-32"
+        let settings = try WireGuardProfile(text: amnezia(fields)).configuration.interface.amneziaSettings
+        XCTAssertEqual(settings["header_protection_key"], String(repeating: "01", count: 32))
+        XCTAssertEqual(settings["content_padding_addition"], "16-32")
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia(fields.replacingOccurrences(of: "S3 = 16", with: "S3 = 11"))))
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia(fields.replacingOccurrences(of: "16-32", with: "0-129"))))
+    }
+
+    func testAmneziaErrorsDoNotRevealHeaderKeyOrSignature() {
+        let secret = "PRIVATE_HEADER_PROTECTION_KEY"
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia(awgFields + "\nHeaderProtectionKey = \(secret)"))) {
+            XCTAssertFalse($0.localizedDescription.contains(secret))
+        }
+        let fields = awgFields.replacingOccurrences(of: "<b 0xAABB><r 10><rd 5><rc 5><t>", with: "<b SECRET_SIGNATURE>")
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia(fields))) {
+            XCTAssertFalse($0.localizedDescription.contains("SECRET_SIGNATURE"))
+        }
+    }
+
+    func testAmneziaDuplicateWrongSectionAndUnsupportedFields() {
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia(awgFields + "\nJc = 8")))
+        XCTAssertThrowsError(try WireGuardProfile(text: valid + "\nJc = 4"))
+        XCTAssertThrowsError(try WireGuardProfile(text: amnezia(awgFields + "\nRekeyTimeout = 3-5")))
+    }
+
+    func testAmneziaSettingsParticipateInEquality() throws {
+        let first = try WireGuardProfile(text: amnezia()).configuration.interface
+        let second = try WireGuardProfile(text: amnezia(awgFields.replacingOccurrences(of: "S1 = 32", with: "S1 = 33"))).configuration.interface
+        XCTAssertNotEqual(first, second)
+    }
+
+    func testHealthNeverExportsAmneziaSecrets() throws {
+        let health = TunnelHealth.parse("header_protection_key=SECRET\nh1=1001\ni1=PRIVATE_TEMPLATE\nrx_bytes=12")
+        let json = String(decoding: try JSONEncoder().encode(health), as: UTF8.self)
+        XCTAssertFalse(json.contains("SECRET"))
+        XCTAssertFalse(json.contains("PRIVATE"))
+        XCTAssertFalse(json.contains("h1"))
+        XCTAssertEqual(health.receivedBytes, 12)
+    }
 }

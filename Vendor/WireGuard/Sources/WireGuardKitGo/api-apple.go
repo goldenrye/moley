@@ -24,10 +24,10 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/amnezia-vpn/amneziawg-go/v3/conn"
+	"github.com/amnezia-vpn/amneziawg-go/v3/device"
+	"github.com/amnezia-vpn/amneziawg-go/v3/tun"
 	"golang.org/x/sys/unix"
-	"golang.zx2c4.com/wireguard/conn"
-	"golang.zx2c4.com/wireguard/device"
-	"golang.zx2c4.com/wireguard/tun"
 )
 
 var loggerFunc unsafe.Pointer
@@ -66,7 +66,7 @@ func init() {
 		for {
 			select {
 			case <-signals:
-				n := runtime.Stack(buf, true)
+				n := runtime.Stack(buf[:len(buf)-1], true)
 				buf[n] = 0
 				if uintptr(loggerFunc) != 0 {
 					C.callLogger(loggerFunc, loggerCtx, 0, (*C.char)(unsafe.Pointer(&buf[0])))
@@ -107,16 +107,22 @@ func wgTurnOn(settings *C.char, tunFd int32) int32 {
 		return -1
 	}
 	logger.Verbosef("Attaching to interface")
-	dev := device.NewDevice(tun, conn.NewStdNetBind(), logger)
+	gatedTUN := newStartupTUN(tun)
+	dev := device.NewDevice(gatedTUN, conn.NewStdNetBind(), logger)
 
 	err = dev.IpcSet(C.GoString(settings))
 	if err != nil {
 		logger.Errorf("Unable to set IPC settings: %v", err)
-		unix.Close(dupTunFd)
+		dev.Close()
 		return -1
 	}
 
-	dev.Up()
+	if err := dev.Up(); err != nil {
+		logger.Errorf("Unable to start device: %v", err)
+		dev.Close()
+		return -1
+	}
+	gatedTUN.start()
 	logger.Verbosef("Device started")
 
 	var i int32
@@ -126,7 +132,7 @@ func wgTurnOn(settings *C.char, tunFd int32) int32 {
 		}
 	}
 	if i == math.MaxInt32 {
-		unix.Close(dupTunFd)
+		dev.Close()
 		return -1
 	}
 	tunnelHandles[i] = tunnelHandle{dev, logger}
@@ -209,7 +215,7 @@ func wgVersion() *C.char {
 		return C.CString("unknown")
 	}
 	for _, dep := range info.Deps {
-		if dep.Path == "golang.zx2c4.com/wireguard" {
+		if dep.Path == "github.com/amnezia-vpn/amneziawg-go/v3" {
 			parts := strings.Split(dep.Version, "-")
 			if len(parts) == 3 && len(parts[2]) == 12 {
 				return C.CString(parts[2][:7])
