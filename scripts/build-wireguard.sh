@@ -24,13 +24,13 @@ for arch in $ARCHS; do
         GOOS_iphonesimulator=ios \
         CC="$(xcrun --find clang)" \
         CFLAGS_PREFIX="-target ${arch}-${target} -isysroot ${SDKROOT} -arch" \
-        BUILDDIR="${PROJECT_TEMP_DIR}/WireGuardGo-${arch}" \
-        DESTDIR="${PROJECT_TEMP_DIR}/WireGuardGo-${arch}/out"
+        BUILDDIR="${CONFIGURATION_TEMP_DIR}/WireGuardGo-${arch}" \
+        DESTDIR="${CONFIGURATION_TEMP_DIR}/WireGuardGo-${arch}/out"
 done
 
 archives=()
 for arch in $ARCHS; do
-    archives+=("${PROJECT_TEMP_DIR}/WireGuardGo-${arch}/out/libwg-go.a")
+    archives+=("${CONFIGURATION_TEMP_DIR}/WireGuardGo-${arch}/out/libwg-go.a")
 done
 mkdir -p "$BUILT_PRODUCTS_DIR"
 xcrun lipo -create "${archives[@]}" -output "$BUILT_PRODUCTS_DIR/libwg-go.a"

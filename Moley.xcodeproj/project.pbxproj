@@ -668,6 +668,7 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = Config/Moley.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2U5R5BXJ37;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/Tunnel-Info.plist";
@@ -694,6 +695,7 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = Config/Moley.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2U5R5BXJ37;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/Tunnel-Info.plist";
