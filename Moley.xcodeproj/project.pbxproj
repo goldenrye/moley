@@ -883,6 +883,7 @@
 					"-lresolv",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.jpi.moley;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Config/WireGuard-Bridging-Header.h";
@@ -914,6 +915,7 @@
 					"-lresolv",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(MOLEY_BUNDLE_ID)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.jpi.moley;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Config/WireGuard-Bridging-Header.h";
