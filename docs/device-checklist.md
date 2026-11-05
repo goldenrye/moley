@@ -35,8 +35,9 @@ Nothing below is claimed to have passed simply because the simulator builds.
       server administration ports, including through its public IP.
 - [ ] Wi-Fi to cellular and back recovers; test weak signal and airplane mode.
 - [ ] Network-change restarts keep AmneziaWG settings and padded handshakes.
-- [ ] Lock/unlock, sleep, app termination, and server reboot recover correctly.
-- [ ] Reboot iPhone: test first unlock before automatic connection.
+- [ ] Lock/unlock, sleep, app termination, and server reboot recover only within
+      the existing session deadline; recovery never grants another 30 minutes.
+- [ ] Reboot iPhone: test first-unlock behavior and refusal of expired sessions.
 - [ ] Unreachable server, wrong public key, blocked UDP and DNS failure do not
       falsely show a successful server handshake.
 - [ ] No traffic works through a stale tunnel even though iOS says connected;
@@ -45,6 +46,7 @@ Nothing below is claimed to have passed simply because the simulator builds.
 ## Lifecycle and UX
 
 - [ ] On-demand is off by default; enabling requires confirmation.
+- [ ] Reconnection can only be enabled during an active, unexpired session.
 - [ ] Manual Disconnect disables on-demand and does not immediately reconnect.
 - [ ] Disconnect/change profile quickly; double-taps do not cause duplicate saves.
 - [ ] Replace/remove is blocked while active or on-demand is enabled.
@@ -54,6 +56,27 @@ Nothing below is claimed to have passed simply because the simulator builds.
 - [ ] Changing VPN status in Settings is reflected when returning to Moley.
 - [ ] VoiceOver, large text, dark mode, iPad rotation and narrow screens work.
 - [ ] Simulator UI test runs on a fresh simulator without a pre-existing profile.
+
+## Session Expiry
+
+See [the session design and limitations](iphone-sessions.md).
+
+- [ ] Connect starts a 30-minute countdown, including connection setup time.
+- [ ] At minute 25, receive a reminder with Extend and Disconnect actions.
+- [ ] With the app backgrounded and phone locked, no response ends the session
+      at minute 30. Verify server/network packet captures, not just the VPN icon.
+- [ ] Repeat with notifications denied, Focus enabled and the app force-closed.
+- [ ] After expiry, no keepalive or handshake retries occur when connectivity
+      returns from airplane mode, sleep, Wi-Fi loss or cellular handover.
+- [ ] Extend adds 30 minutes to the deadline and reschedules the reminder.
+      Opening/dismissing a reminder does not extend; stale actions do nothing.
+- [ ] Manual or Settings disconnect removes the reminder and cannot be undone
+      by a concurrent extension. Reconnecting requires an explicit fresh start.
+- [ ] Network/backend restart preserves the original deadline. Expired on-demand
+      starts are refused even before opening Moley to clear the on-demand rule.
+- [ ] Upgrading an old unrestricted profile requires starting a session in Moley.
+- [ ] Confirm regular network connectivity returns after shutdown; this feature
+      is not a kill switch.
 
 ## Release
 

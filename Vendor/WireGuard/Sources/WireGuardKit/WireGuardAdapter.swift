@@ -49,6 +49,7 @@ public class WireGuardAdapter {
 
     /// Log handler closure.
     private let logHandler: LogHandler
+    private let sessionTimeRemaining: () -> TimeInterval
 
     /// Private queue used to synchronize access to `WireGuardAdapter` members.
     private let workQueue = DispatchQueue(label: "WireGuardAdapterWorkQueue")
@@ -129,8 +130,11 @@ public class WireGuardAdapter {
     /// - Parameter packetTunnelProvider: an instance of `NEPacketTunnelProvider`. Internally stored
     ///   as a weak reference.
     /// - Parameter logHandler: a log handler closure.
-    public init(with packetTunnelProvider: NEPacketTunnelProvider, logHandler: @escaping LogHandler) {
+    public init(with packetTunnelProvider: NEPacketTunnelProvider,
+                sessionTimeRemaining: @escaping () -> TimeInterval,
+                logHandler: @escaping LogHandler) {
         self.packetTunnelProvider = packetTunnelProvider
+        self.sessionTimeRemaining = sessionTimeRemaining
         self.logHandler = logHandler
 
         setupLogHandler()
@@ -151,6 +155,22 @@ public class WireGuardAdapter {
     }
 
     // MARK: - Public methods
+
+    /// Refresh only after an explicit lease revision, not on every network event.
+    public func refreshSessionDeadline() {
+        workQueue.async {
+            if case .started(let handle, _) = self.state {
+                wgSetSessionDuration(handle, self.sessionMilliseconds())
+            }
+        }
+    }
+
+    private func sessionMilliseconds() -> Int64 {
+        let remaining = sessionTimeRemaining()
+        guard remaining.isFinite, remaining > 0, remaining <= 7 * 24 * 60 * 60 else { return 0 }
+        // Reserve a small margin for the Swift/C transition; never round a deadline up.
+        return max(0, Int64(remaining * 1000) - 100)
+    }
 
     /// Returns a runtime configuration from WireGuard.
     /// - Parameter completionHandler: completion handler.
@@ -188,6 +208,9 @@ public class WireGuardAdapter {
             networkMonitor.start(queue: self.workQueue)
 
             do {
+                guard self.sessionMilliseconds() > 0 else {
+                    throw WireGuardAdapterError.startWireGuardBackend(-1)
+                }
                 let settingsGenerator = try self.makeSettingsGenerator(with: tunnelConfiguration)
                 try self.setNetworkSettings(settingsGenerator.generateNetworkSettings())
 
@@ -373,7 +396,9 @@ public class WireGuardAdapter {
             throw WireGuardAdapterError.cannotLocateTunnelFileDescriptor
         }
 
-        let handle = wgTurnOn(wgConfig, tunnelFileDescriptor)
+        let milliseconds = sessionMilliseconds()
+        guard milliseconds > 0 else { throw WireGuardAdapterError.startWireGuardBackend(-1) }
+        let handle = wgTurnOn(wgConfig, tunnelFileDescriptor, milliseconds)
         if handle < 0 {
             throw WireGuardAdapterError.startWireGuardBackend(handle)
         }
@@ -414,6 +439,10 @@ public class WireGuardAdapter {
     /// Helper method used by network path monitor.
     /// - Parameter path: new network path
     private func didReceivePathUpdate(path: Network.NWPath) {
+        guard sessionMilliseconds() > 0 else {
+            if case .started(let handle, _) = self.state { wgSetSessionDuration(handle, 0) }
+            return
+        }
         self.logHandler(.verbose, "Network change detected with \(path.status) route and interface order \(path.availableInterfaces)")
 
         #if os(macOS)

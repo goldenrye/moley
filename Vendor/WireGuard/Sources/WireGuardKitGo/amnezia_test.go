@@ -55,6 +55,7 @@ func TestAmneziaPeerRoundTrip(t *testing.T) {
 			var devices [2]*device.Device
 			var tuns [2]*tuntest.ChannelTUN
 			var binds [2]*recordingBind
+			var guards [2]*sessionBind
 			var ports [2]string
 			for i := range keys {
 				var err error
@@ -67,7 +68,8 @@ func TestAmneziaPeerRoundTrip(t *testing.T) {
 				tuns[i] = tuntest.NewChannelTUN()
 				binds[i] = &recordingBind{Bind: conn.NewStdNetBind()}
 				gatedTUN := newStartupTUN(tuns[i].TUN())
-				devices[i] = device.NewDevice(gatedTUN, binds[i], device.NewLogger(device.LogLevelSilent, ""))
+				guards[i] = newSessionBind(binds[i], 60000)
+				devices[i] = device.NewDevice(gatedTUN, guards[i], device.NewLogger(device.LogLevelSilent, ""))
 				t.Cleanup(devices[i].Close)
 				config := mode.settings + fmt.Sprintf(
 					"private_key=%s\nlisten_port=0\nreplace_peers=true\npublic_key=%s\nallowed_ip=10.66.66.%d/32\n",
@@ -123,7 +125,6 @@ func TestAmneziaPeerRoundTrip(t *testing.T) {
 				}
 			}
 			binds[0].mu.Lock()
-			defer binds[0].mu.Unlock()
 			foundHandshake := false
 			for _, packet := range binds[0].packets {
 				if len(packet) != 148+mode.padding {
@@ -134,8 +135,21 @@ func TestAmneziaPeerRoundTrip(t *testing.T) {
 					foundHandshake = true
 				}
 			}
+			binds[0].mu.Unlock()
 			if !foundHandshake {
 				t.Fatal("expected padded handshake/header was not sent")
+			}
+			guards[0].renew(0)
+			packet := tuntest.Ping(netip.MustParseAddr("10.66.66.3"), netip.MustParseAddr("10.66.66.2"))
+			select {
+			case tuns[0].Outbound <- packet:
+			case <-time.After(5 * time.Second):
+				t.Fatal("TUN write after expiry timed out")
+			}
+			select {
+			case <-tuns[1].Inbound:
+				t.Fatal("expired client still transmitted IP traffic")
+			case <-time.After(200 * time.Millisecond):
 			}
 		})
 	}

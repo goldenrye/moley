@@ -20,9 +20,14 @@ Local changes:
   `b5928efb6ca19f0153958460c3d141f04abc5c2e`. Source:
   https://github.com/amnezia-vpn/amneziawg-go . Its license is included as
   `AMNEZIAWG-LICENSE`; dependencies/checksums are pinned in `go.mod`/`go.sum`.
-- Keep the existing C ABI (`wgTurnOn`, etc.) while linking the AmneziaWG backend.
-  Update version reporting, close the device on initialization failure, check
-  `Up()` errors, and bound stack-dump writes.
+- Link the AmneziaWG backend through the local C bridge. Update version reporting,
+  close the device on initialization failure, check `Up()` errors, and bound
+  stack-dump writes.
+- Extend the local `wgTurnOn` ABI with a session duration and add
+  `wgSetSessionDuration`. The adapter reads the persisted remaining lifetime at
+  startup and network recovery; `session_bind.go` gates every outgoing datagram
+  using the sleep-aware monotonic clock. Explicit extensions refresh that deadline.
+  The Swift adapter and bridge header must be built together.
 - Add `startup_tun.go` to prevent the initial read from using a stale zero S4
   padding offset before configuration. Its behavior is covered by
   `amnezia_test.go` using real loopback UDP and in-memory TUN devices.

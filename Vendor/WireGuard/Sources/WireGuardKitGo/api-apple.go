@@ -54,6 +54,7 @@ func (l CLogger) Printf(format string, args ...interface{}) {
 type tunnelHandle struct {
 	*device.Device
 	*device.Logger
+	session *sessionBind
 }
 
 var tunnelHandles = make(map[int32]tunnelHandle)
@@ -83,7 +84,12 @@ func wgSetLogger(context, loggerFn uintptr) {
 }
 
 //export wgTurnOn
-func wgTurnOn(settings *C.char, tunFd int32) int32 {
+func wgTurnOn(settings *C.char, tunFd int32, sessionMilliseconds int64) int32 {
+	if sessionMilliseconds <= 0 {
+		return -1
+	}
+	// Interface setup must consume session time, not postpone the send deadline.
+	guardedBind := newSessionBind(conn.NewStdNetBind(), sessionMilliseconds)
 	logger := &device.Logger{
 		Verbosef: CLogger(0).Printf,
 		Errorf:   CLogger(1).Printf,
@@ -108,7 +114,7 @@ func wgTurnOn(settings *C.char, tunFd int32) int32 {
 	}
 	logger.Verbosef("Attaching to interface")
 	gatedTUN := newStartupTUN(tun)
-	dev := device.NewDevice(gatedTUN, conn.NewStdNetBind(), logger)
+	dev := device.NewDevice(gatedTUN, guardedBind, logger)
 
 	err = dev.IpcSet(C.GoString(settings))
 	if err != nil {
@@ -135,8 +141,15 @@ func wgTurnOn(settings *C.char, tunFd int32) int32 {
 		dev.Close()
 		return -1
 	}
-	tunnelHandles[i] = tunnelHandle{dev, logger}
+	tunnelHandles[i] = tunnelHandle{dev, logger, guardedBind}
 	return i
+}
+
+//export wgSetSessionDuration
+func wgSetSessionDuration(handle int32, milliseconds int64) {
+	if tunnel, ok := tunnelHandles[handle]; ok {
+		tunnel.session.renew(milliseconds)
+	}
 }
 
 //export wgTurnOff

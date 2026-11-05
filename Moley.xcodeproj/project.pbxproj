@@ -21,6 +21,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		A10100000000000000000001 /* TunnelSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10100000000000000000004 /* TunnelSession.swift */; };
+		A10100000000000000000002 /* TunnelSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10100000000000000000004 /* TunnelSession.swift */; };
+		A10100000000000000000003 /* SessionNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10100000000000000000005 /* SessionNotifications.swift */; };
 		04B9ED8935F49FC7001F0F45 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = E71296AA3347BEB502C46EB9 /* x25519.c */; };
 		163EA983F3B455D1A84DCEE2 /* PacketTunnelSettingsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D46774863B3FC1ACFAE29F /* PacketTunnelSettingsGenerator.swift */; };
 		1AB19756B57D778952F717CA /* ProfileKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6996E058B423F6AF94B06FB3 /* ProfileKeychain.swift */; };
@@ -123,6 +126,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A10100000000000000000004 /* TunnelSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunnelSession.swift; sourceTree = "<group>"; };
+		A10100000000000000000005 /* SessionNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionNotifications.swift; sourceTree = "<group>"; };
 		07D46774863B3FC1ACFAE29F /* PacketTunnelSettingsGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PacketTunnelSettingsGenerator.swift; path = WireGuardKit/PacketTunnelSettingsGenerator.swift; sourceTree = "<group>"; };
 		0E46E2D0242621C13FCBA8B6 /* ImportProfileView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImportProfileView.swift; sourceTree = "<group>"; };
 		0FBD27CF9152ABFE0BC30A0F /* VPNController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VPNController.swift; sourceTree = "<group>"; };
@@ -308,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				6996E058B423F6AF94B06FB3 /* ProfileKeychain.swift */,
+                            A10100000000000000000004 /* TunnelSession.swift */,
 				46B03520FC846D55106DC15D /* TunnelHealth.swift */,
 				59D4F5453F2213B43611E960 /* WireGuardProfile.swift */,
 			);
@@ -321,6 +327,7 @@
 				0E46E2D0242621C13FCBA8B6 /* ImportProfileView.swift */,
 				7E0BFBC34B9A56997A885083 /* MoleyApp.swift */,
 				0FBD27CF9152ABFE0BC30A0F /* VPNController.swift */,
+                            A10100000000000000000005 /* SessionNotifications.swift */,
 				8311F6BDC8B925EB33049345 /* Assets.xcassets */,
 			);
 			path = App;
@@ -511,6 +518,8 @@
 				A965FD3BC1710FAE812F00DB /* ImportProfileView.swift in Sources */,
 				9B375F1328AB19FEA69F8DBB /* MoleyApp.swift in Sources */,
 				B9D141737764F91E569E447F /* VPNController.swift in Sources */,
+                            A10100000000000000000003 /* SessionNotifications.swift in Sources */,
+                            A10100000000000000000001 /* TunnelSession.swift in Sources */,
 				B60258204C40DF6FC1E7E665 /* ProfileKeychain.swift in Sources */,
 				7808665EB799CD4D7B8D59A6 /* TunnelHealth.swift in Sources */,
 				577682346B01D211DDCE1DAE /* WireGuardProfile.swift in Sources */,
@@ -539,6 +548,7 @@
 				2018436CB9B06367E319C9E2 /* TunnelHealth.swift in Sources */,
 				DD18EA96DAD5C58C3585ED01 /* WireGuardProfile.swift in Sources */,
 				ADFC83D14516BD14D92F6CE7 /* PacketTunnelProvider.swift in Sources */,
+                            A10100000000000000000002 /* TunnelSession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

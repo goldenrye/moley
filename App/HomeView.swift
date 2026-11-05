@@ -41,6 +41,23 @@ struct HomeView: View {
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
+                        if vpn.isActive, let session = vpn.session {
+                            TimelineView(.periodic(from: .now, by: 1)) { _ in
+                                let seconds = Int(ceil(session.remaining(at: .now)))
+                                Text(String(format: "Session ends in %02d:%02d", seconds / 60, seconds % 60))
+                                    .font(.headline.monospacedDigit())
+                                    .accessibilityIdentifier("sessionCountdown")
+                            }
+                            Button("Extend 30 minutes") { Task { await vpn.extendSession() } }
+                                .disabled(vpn.isBusy || vpn.sessionRemaining <= 0)
+                                .accessibilityIdentifier("extendSessionButton")
+                        }
+                        Text("30-minute sessions. Reminder after 25 minutes; no response means automatic disconnection.")
+                            .font(.footnote).foregroundStyle(.secondary)
+                            .accessibilityIdentifier("sessionPolicy")
+                        if let warning = vpn.notificationWarning {
+                            Text(warning).font(.footnote).foregroundStyle(.orange)
+                        }
                         if vpn.hasProfile {
                             Button {
                                 Task {
@@ -48,7 +65,7 @@ struct HomeView: View {
                                     else { await vpn.connect() }
                                 }
                             } label: {
-                                Text(vpn.isActive ? "Disconnect" : "Connect")
+                                Text(vpn.isActive ? "Disconnect" : "Connect for 30 minutes")
                                     .font(.headline)
                                     .frame(maxWidth: .infinity, minHeight: 38)
                             }
@@ -78,15 +95,15 @@ struct HomeView: View {
                                 Text("This profile has no traffic obfuscation. Import a matching AmneziaWG server configuration to enable it.")
                                     .font(.footnote).foregroundStyle(.orange)
                             }
-                            Toggle("Connect automatically", isOn: Binding(
+                            Toggle("Reconnect during this session", isOn: Binding(
                                 get: { vpn.autoConnect },
                                 set: { enabled in
                                     if enabled { presentation.confirmingAutoConnect = true }
                                     else { Task { await vpn.setAutoConnect(false) } }
                                 }
                             ))
-                            .disabled(vpn.isBusy)
-                            Text("Reconnect on Wi-Fi and cellular. Disconnect turns this off.")
+                            .disabled(vpn.isBusy || (!vpn.autoConnect && (!vpn.isActive || vpn.sessionRemaining <= 0)))
+                            Text("Off by default. Reconnection never extends the deadline. Start a new session in Moley after expiry.")
                                 .font(.footnote).foregroundStyle(.secondary)
                             Divider()
                             Button("Replace configuration") { presentation.showingImport = true }
@@ -138,9 +155,9 @@ struct HomeView: View {
             .confirmationDialog("Remove the saved VPN and its private key?", isPresented: $presentation.confirmingRemoval, titleVisibility: .visible) {
                 Button("Remove configuration", role: .destructive) { Task { await vpn.removeProfile() } }
             } message: { Text("This does not revoke access on AWS. Ask the server administrator to remove this device's peer too.") }
-            .confirmationDialog("Automatically connect this iPhone?", isPresented: $presentation.confirmingAutoConnect, titleVisibility: .visible) {
-                Button("Enable automatic connection") { Task { await vpn.setAutoConnect(true) } }
-            } message: { Text("iOS may start Moley immediately and reconnect on Wi-Fi or cellular, even while the app is closed.") }
+            .confirmationDialog("Reconnect within this session?", isPresented: $presentation.confirmingAutoConnect, titleVisibility: .visible) {
+                Button("Enable session reconnection") { Task { await vpn.setAutoConnect(true) } }
+            } message: { Text("iOS can reconnect on Wi-Fi or cellular until the current deadline. Expired sessions cannot automatically restart.") }
             .task { await vpn.load() }
             .task(id: scenePhase) {
                 guard scenePhase == .active else { return }

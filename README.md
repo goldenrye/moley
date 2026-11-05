@@ -12,7 +12,9 @@ AmneziaWG server. Requires iOS 17 or later. Also supports iPad layouts.
 - Import from Files or an explicit paste action, with strict validation.
 - One profile per device; private configuration stored in a shared, device-only
   Keychain item, accessible after the first unlock following a reboot.
-- Connect/disconnect, opt-in on-demand connection, replacement and removal.
+- Thirty-minute sessions, a minute-25 reminder, explicit extension, and automatic
+  local shutdown without a response. Countdown and notification actions included.
+- Opt-in reconnection within the current session only, replacement and removal.
 - Real system VPN status plus a separate server-handshake indicator.
 - Unit tests and a simulator UI smoke test.
 
@@ -76,16 +78,24 @@ ruby scripts/generate-project.rb
 
 ### Verified Locally
 
-On 2026-11-03 with Xcode 27.1 and Go 1.26.2:
+With Xcode 27.1 and Go 1.26.2:
 
-- Simulator app built; 29 unit tests and 1 setup UI test passed.
-- Unsigned physical-iPhone app and packet tunnel extension built successfully.
+- Simulator app built; 41 unit tests and 1 setup UI test passed on 2026-11-05,
+  including deadline, extension, stale-action, and notification-payload tests.
+- Unsigned physical-iPhone app and packet tunnel extension, including session
+  enforcement, built successfully on 2026-11-05.
 - Four local Go peer-exchange scenarios passed, including first-packet padding
-  and AWG 3 header protection, repeated under the race detector.
+  and AWG 3 header protection, repeated under the race detector. Session deadline,
+  revocation, concurrent renewal and post-revocation packet tests also passed.
 - Four private-settings generator tests passed.
 
 Signing, shared-Keychain access on a real device, live AWS connectivity, DNS/IPv6
-behavior, and sleep/on-demand recovery still require the physical-device checklist.
+behavior, locked-phone reminders, expiry, and sleep/on-demand recovery still
+require the physical-device checklist.
+
+See [iPhone session behavior and limitations](docs/iphone-sessions.md). Notification
+delivery is not guaranteed; expiry does not depend on notification permission.
+Thirty minutes is a convenience limit, not a censorship-safety guarantee.
 
 ## Connect the Family
 

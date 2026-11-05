@@ -7,6 +7,7 @@ final class MoleyUITests: XCTestCase {
         app.launch()
         let setup = app.buttons["setupButton"]
         XCTAssertTrue(setup.waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["sessionPolicy"].exists)
         setup.tap()
         XCTAssertTrue(app.buttons["chooseFileButton"].waitForExistence(timeout: 5))
         let reveal = app.switches["revealConfiguration"]

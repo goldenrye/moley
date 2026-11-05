@@ -2,11 +2,11 @@ import SwiftUI
 
 @main
 struct MoleyApp: App {
-    @StateObject private var vpn = VPNController()
+    @UIApplicationDelegateAdaptor(MoleyAppDelegate.self) private var delegate
 
     var body: some Scene {
         WindowGroup {
-            HomeView(vpn: vpn)
+            HomeView(vpn: delegate.vpn)
                 .tint(.teal)
         }
     }

@@ -262,3 +262,94 @@ final class WireGuardProfileTests: XCTestCase {
         XCTAssertEqual(health.receivedBytes, 12)
     }
 }
+
+final class TunnelSessionTests: XCTestCase {
+    private let start = SessionClock(date: Date(timeIntervalSince1970: 1_000_000), continuous: 10_000)
+
+    private func clock(_ seconds: TimeInterval, wallOffset: TimeInterval = 0) -> SessionClock {
+        SessionClock(date: start.date.addingTimeInterval(seconds + wallOffset), continuous: start.continuous + seconds)
+    }
+
+    func testThirtyMinuteLimitAndTwentyFiveMinuteReminder() {
+        let lease = TunnelSession(now: start)
+        XCTAssertEqual(lease.remaining(at: start), 1800)
+        XCTAssertEqual(lease.reminderDelay(at: start), 1500)
+        XCTAssertEqual(lease.remaining(at: clock(1500)), 300)
+        XCTAssertEqual(lease.remaining(at: clock(1799)), 1)
+        XCTAssertEqual(lease.remaining(at: clock(1800)), 0)
+        XCTAssertNil(lease.reminderDelay(at: clock(1800)))
+    }
+
+    func testExplicitExtensionAddsThirtyMinutesAndMovesReminder() throws {
+        var lease = TunnelSession(now: start)
+        let identifier = lease.notificationID
+        try lease.extend(at: clock(1500), expectedID: lease.id, expectedRevision: 0)
+        XCTAssertEqual(lease.remaining(at: clock(1500)), 2100)
+        XCTAssertEqual(lease.reminderDelay(at: clock(1500)), 1800)
+        XCTAssertEqual(lease.remaining(at: clock(3600)), 0)
+        XCTAssertNotEqual(identifier, lease.notificationID)
+    }
+
+    func testExpiredSessionCannotBeExtended() {
+        var lease = TunnelSession(now: start)
+        XCTAssertThrowsError(try lease.extend(at: clock(1800), expectedID: lease.id, expectedRevision: 0))
+    }
+
+    func testOldNotificationCannotExtendNewSession() {
+        let old = TunnelSession(now: start)
+        var current = TunnelSession(now: start)
+        XCTAssertThrowsError(try current.extend(at: clock(1500), expectedID: old.id, expectedRevision: 0))
+    }
+
+    func testDuplicateNotificationActionCannotExtendTwice() throws {
+        var lease = TunnelSession(now: start)
+        try lease.extend(at: clock(1500), expectedID: lease.id, expectedRevision: 0)
+        XCTAssertThrowsError(try lease.extend(at: clock(1501), expectedID: lease.id, expectedRevision: 0))
+    }
+
+    func testPersistenceDoesNotResetDeadlineOnRestart() throws {
+        let lease = TunnelSession(now: start)
+        let restored = try JSONDecoder().decode(TunnelSession.self, from: JSONEncoder().encode(lease))
+        XCTAssertEqual(restored, lease)
+        XCTAssertEqual(restored.remaining(at: clock(1700)), 100)
+        XCTAssertEqual(restored.remaining(at: clock(1900)), 0)
+    }
+
+    func testClockRollbackDoesNotExtendSession() {
+        let lease = TunnelSession(now: start)
+        XCTAssertEqual(lease.remaining(at: clock(1700, wallOffset: -3600)), 100)
+        XCTAssertEqual(lease.remaining(at: clock(1800, wallOffset: -3600)), 0)
+    }
+
+    func testClockForwardExpiresConservatively() {
+        let lease = TunnelSession(now: start)
+        XCTAssertEqual(lease.remaining(at: clock(100, wallOffset: 1800)), 0)
+    }
+
+    func testResetContinuousClockFailsClosed() {
+        let lease = TunnelSession(now: start)
+        let reboot = SessionClock(date: start.date.addingTimeInterval(10), continuous: 1)
+        XCTAssertEqual(lease.remaining(at: reboot), 0)
+    }
+
+    func testExtensionAfterRollbackDoesNotRestoreLostTime() throws {
+        var lease = TunnelSession(now: start)
+        let changed = clock(1500, wallOffset: -3600)
+        try lease.extend(at: changed, expectedID: lease.id, expectedRevision: 0)
+        XCTAssertEqual(lease.remaining(at: changed), 2100)
+    }
+
+    func testMissingOrCorruptRecordCannotDecode() {
+        XCTAssertThrowsError(try JSONDecoder().decode(TunnelSession.self, from: Data("{}".utf8)))
+    }
+
+    @MainActor
+    func testReminderCarriesSessionIdentityAndIsNotRepeating() async throws {
+        let lease = TunnelSession(now: start)
+        let request = try XCTUnwrap(SessionNotifications.request(for: lease, now: start))
+        XCTAssertEqual(request.content.userInfo["sessionID"] as? String, lease.id.uuidString)
+        XCTAssertEqual(request.content.userInfo["revision"] as? Int, 0)
+        XCTAssertFalse(try XCTUnwrap(request.trigger).repeats)
+        XCTAssertNil(SessionNotifications.request(for: lease, now: clock(1800)))
+    }
+}
