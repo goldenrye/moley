@@ -207,6 +207,32 @@ editing its file, explicitly load the reviewed configuration and verify it with
 
 ## 5. iPhone Configuration
 
+### Adding a device with the script
+
+`scripts/new-device.sh` does the key generation, address choice and profile
+writing below in one step. It needs `awg` or `wg` (`brew install wireguard-tools`)
+and two private files in `~/moley-keys` (or `$MOLEY_KEYS_DIR`): the
+`awg-shared.conf` from step 2, and a `server.env` you create once:
+
+```ini
+SERVER_PUBLIC_KEY=CONTENTS_OF_SERVER_PUB
+SERVER_ENDPOINT=YOUR_ELASTIC_IP_OR_HOSTNAME:51820
+CLIENT_DNS=1.1.1.1, 1.0.0.1
+```
+
+```bash
+scripts/new-device.sh mom-iphone
+```
+
+It writes `~/moley-keys/devices/mom-iphone/` with the device keys, the
+`mom-iphone.conf` profile and a `server-peer.conf` section, picks the next
+unused `10.66.66.N` among profiles in that directory, and prints the server
+commands. Pass `--index N` to choose the address and `--qr` to print a QR code
+for Android clients (needs `qrencode`). Devices created by hand outside the keys
+directory are not detected; check `sudo awg show wg0 allowed-ips` first.
+
+### Writing a profile by hand
+
 Create a private `family-phone.conf` with actual keys and endpoint:
 
 ```ini
