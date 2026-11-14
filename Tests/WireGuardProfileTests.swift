@@ -1,4 +1,5 @@
 import XCTest
+import CoreImage
 @testable import Moley
 
 final class WireGuardProfileTests: XCTestCase {
@@ -23,6 +24,62 @@ final class WireGuardProfileTests: XCTestCase {
         let profile = try WireGuardProfile(text: valid)
         XCTAssertEqual(profile.endpoint, "vpn.example.com:51820")
         XCTAssertEqual(profile.text, valid)
+    }
+
+    func testQRCodeAcceptsConfigurationWithoutChangingKeys() throws {
+        let profile = try ConfigurationQRCode.profile(from: valid)
+        XCTAssertEqual(profile.text, valid)
+        XCTAssertEqual(profile.endpoint, "vpn.example.com:51820")
+        XCTAssertFalse(profile.isObfuscated)
+    }
+
+    func testAmneziaQRCodeImageRoundTrip() throws {
+        let text = amnezia(awgFields + "\nHeaderProtectionKey = \(key)\nContentPaddingAddition = 16-32")
+        let filter = try XCTUnwrap(CIFilter(name: "CIQRCodeGenerator"))
+        filter.setValue(Data(text.utf8), forKey: "inputMessage")
+        filter.setValue("M", forKey: "inputCorrectionLevel")
+        let code = try XCTUnwrap(filter.outputImage).transformed(by: CGAffineTransform(scaleX: 8, y: 8))
+        // A quiet border helps detection, just as it does with a printed code.
+        let image = code.composited(over: CIImage(color: .white))
+            .cropped(to: code.extent.insetBy(dx: -32, dy: -32))
+        let context = CIContext(options: [.useSoftwareRenderer: true])
+        let cgImage = try XCTUnwrap(context.createCGImage(image, from: image.extent))
+        let detector = try XCTUnwrap(CIDetector(ofType: CIDetectorTypeQRCode, context: context,
+                                               options: [CIDetectorAccuracy: CIDetectorAccuracyHigh]))
+        let observations = detector.features(in: CIImage(cgImage: cgImage)).compactMap { $0 as? CIQRCodeFeature }
+        XCTAssertEqual(observations.count, 1)
+        let profile = try ConfigurationQRCode.profile(from: observations.first?.messageString)
+        XCTAssertEqual(profile.text, text)
+        XCTAssertTrue(profile.isObfuscated)
+        XCTAssertEqual(profile.configuration.interface.amneziaSettings["header_protection_key"],
+                       String(repeating: "01", count: 32))
+    }
+
+    func testQRCodeRejectsEmptyBinaryAndLinkPayloads() {
+        for payload: String? in [nil, "", " \n", "https://example.com/profile.conf",
+                                 "vpn://COMPRESSED_PROFILE", "WIFI:T:WPA;S:test;P:secret;;"] {
+            XCTAssertThrowsError(try ConfigurationQRCode.profile(from: payload))
+        }
+    }
+
+    func testQRCodeRetainsProfileSafetyChecks() {
+        for payload in [amnezia("S4 = 16"), valid + "\nPostUp = echo secret",
+                        valid.replacingOccurrences(of: ", ::/0", with: "")] {
+            XCTAssertThrowsError(try ConfigurationQRCode.profile(from: payload))
+        }
+    }
+
+    func testQRCodeSizeLimitCountsUTF8Bytes() {
+        XCTAssertThrowsError(try ConfigurationQRCode.profile(from: valid + "\n#" + String(repeating: "a", count: 32_768)))
+        let multiByte = String(repeating: "\u{00e9}", count: 16_385)
+        XCTAssertThrowsError(try ConfigurationQRCode.profile(from: multiByte))
+    }
+
+    func testQRCodeErrorDoesNotExposePrivateKey() {
+        let secret = "QR_PRIVATE_KEY_DO_NOT_SHOW"
+        XCTAssertThrowsError(try ConfigurationQRCode.profile(from: valid.replacingOccurrences(of: key, with: secret))) {
+            XCTAssertFalse($0.localizedDescription.contains(secret))
+        }
     }
 
     func testCommentsCRLFAndRepeatedAddress() throws {

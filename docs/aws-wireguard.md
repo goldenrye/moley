@@ -236,6 +236,37 @@ Share via a trusted private channel (for example AirDrop), import in Moley,
 approve the system VPN prompt and connect. Delete delivery copies and empty
 recently-deleted storage as appropriate. A `.conf` file is an access credential.
 
+### Optional QR Setup
+
+No server software change is needed for QR setup. Encode the **complete client
+`family-phone.conf` text**, including its private key and AmneziaWG settings, in
+one QR code. Do not encode the server configuration, a download URL, or an
+Amnezia `vpn://` share link; those formats are not supported by Moley's scanner.
+
+On a trusted administrator machine, install `qrencode` (`brew install qrencode`
+on macOS, or `sudo apt-get install qrencode` on Ubuntu), then display it locally:
+
+```bash
+qrencode -t ansiutf8 < family-phone.conf
+```
+
+On the iPhone, choose **Set up Moley > Scan configuration QR code**, allow camera
+access, and scan the code from the administrator's screen. Check the scanned
+server, tap **Save configuration**, and approve the iOS VPN prompt. Saving does
+not connect; tap **Connect for 30 minutes** when ready.
+
+QR codes have a much smaller capacity than Moley's 32 KB file limit (at most
+about 3 KB for a single byte-mode code, depending on error correction). For large
+profiles or dense codes that will not scan reliably, use file import instead.
+Keep the entire code and its blank border visible; show only one code at a time.
+
+The QR contains an access credential: never use an online QR generator, include
+it in screenshots/recordings, or display it in a shared terminal session. Close
+the display and clear terminal scrollback afterward. Use a separate client
+profile/code per device. Moley processes camera frames locally and does not save
+or upload images. Denied/restricted camera access does not prevent file/paste
+import.
+
 On Android, Windows, macOS, and Linux, use an **AmneziaWG-compatible client**
 that supports the profile's version (AWG 3 for the generated settings).
 Standard WireGuard clients cannot use this obfuscated profile. Continue using a

@@ -18,6 +18,25 @@ Nothing below is claimed to have passed simply because the simulator builds.
       keys and excessive MTU/padding combinations fail before saving.
 - [ ] Revealed keys are hidden when backgrounding; delivery copies are removed.
 
+## QR Setup
+
+- [ ] Scan a complete client configuration from a trusted screen and paper.
+      Verify AmneziaWG settings and the displayed endpoint, then explicitly Save.
+- [ ] Scanning alone neither installs a VPN profile nor starts a session.
+- [ ] Ordinary WireGuard QR configurations remain labeled unobfuscated.
+- [ ] Invalid/partial profiles, website links and `vpn://` links fail without
+      revealing keys; retry by reopening the scanner. Existing draft stays intact.
+- [ ] Deny camera permission and cancel: file/paste setup still works. Grant
+      permission in Settings and return: the scanner resumes.
+- [ ] Test restricted/unavailable camera, interruption, cancellation during the
+      permission prompt, repeated scans and reopening the scanner.
+- [ ] Cancel scanning without changing an existing draft. After saving/canceling,
+      verify that the camera indicator turns off.
+- [ ] Background/lock the device while scanning: capture stops and the preview
+      is hidden in the app switcher. Resume and scan again.
+- [ ] Rotate iPad, use large text/VoiceOver, and test dense QR codes in low light.
+      Use file import when a profile is too large for a reliable single QR code.
+
 ## Connectivity
 
 - [ ] Connect: server `awg show` and app report a recent handshake.

@@ -5,6 +5,9 @@ import UniformTypeIdentifiers
 private final class ImportDraft: ObservableObject {
     @Published var text = ""
     @Published var showingFilePicker = false
+    @Published var showingQRScanner = false
+    var scanError: String?
+    @Published var scannedEndpoint: String?
     @Published var localError: String?
     @Published var revealText = false
     @Published var isSaving = false
@@ -20,9 +23,14 @@ struct ImportProfileView: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("Ask your family administrator for your personal AmneziaWG .conf file. Its obfuscation settings must match the server. Never share your file with another device.")
+                    Text("Ask your family administrator for your personal AmneziaWG configuration as a QR code or .conf file. Its obfuscation settings must match the server. Never share it with another device.")
                     Text("Standard WireGuard files still work, but do not enable obfuscation.")
                         .font(.footnote).foregroundStyle(.secondary)
+                    Button("Scan configuration QR code", systemImage: "qrcode.viewfinder") {
+                        draft.revealText = false
+                        draft.showingQRScanner = true
+                    }
+                    .accessibilityIdentifier("scanQRButton")
                     Button("Choose configuration file", systemImage: "doc.badge.plus") { draft.showingFilePicker = true }
                         .accessibilityIdentifier("chooseFileButton")
                     PasteButton(payloadType: String.self) { strings in
@@ -38,6 +46,11 @@ struct ImportProfileView: View {
                     } else {
                         Label("Configuration ready to validate", systemImage: "doc.badge.checkmark")
                     }
+                    if let endpoint = draft.scannedEndpoint {
+                        Text("Scanned server: \(endpoint)")
+                            .font(.callout)
+                            .accessibilityIdentifier("scannedEndpoint")
+                    }
                     Toggle("Show or edit private configuration", isOn: $draft.revealText)
                         .accessibilityIdentifier("revealConfiguration")
                     if draft.revealText {
@@ -50,6 +63,7 @@ struct ImportProfileView: View {
                             .accessibilityLabel("VPN configuration")
                             .accessibilityIdentifier("configurationEditor")
                             .onChange(of: draft.text) { _, value in
+                                draft.scannedEndpoint = nil
                                 if value.utf8.count > WireGuardProfile.maximumSize {
                                     draft.text = ""
                                     draft.localError = "Configuration is too large (maximum 32 KB)."
@@ -57,7 +71,7 @@ struct ImportProfileView: View {
                             }
                     }
                 } footer: {
-                    Text("The file contains a private key. Moley stores it securely after import, but cannot delete copies in Files, messages, or your clipboard. Remove those copies yourself.")
+                    Text("The QR code or file contains a private key. Only scan a code from your trusted administrator. Moley stores the configuration securely after import, but cannot delete copies in Files, messages, photos, or your clipboard. Remove those copies yourself.")
                 }
 
                 Section {
@@ -87,6 +101,24 @@ struct ImportProfileView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("Cancel") { draft.text = ""; dismiss() }.disabled(draft.isSaving) }
             .interactiveDismissDisabled(draft.isSaving)
+            .sheet(isPresented: $draft.showingQRScanner, onDismiss: {
+                // Present validation errors after the camera sheet has closed.
+                if let error = draft.scanError {
+                    draft.localError = error
+                    draft.scanError = nil
+                }
+            }) {
+                QRCodeScannerView { payload in
+                    do {
+                        let profile = try ConfigurationQRCode.profile(from: payload)
+                        setText(profile.text)
+                        draft.scannedEndpoint = profile.endpoint
+                    } catch {
+                        draft.scanError = "Could not scan the configuration. Use a QR code containing the complete .conf text, not a website or vpn:// link. \(error.localizedDescription)"
+                    }
+                    draft.showingQRScanner = false
+                }
+            }
             .fileImporter(isPresented: $draft.showingFilePicker, allowedContentTypes: [.data], allowsMultipleSelection: false) { result in
                 do {
                     guard let url = try result.get().first else { return }
@@ -109,7 +141,9 @@ struct ImportProfileView: View {
             .onChange(of: scenePhase) { _, phase in
                 if phase != .active { draft.revealText = false }
             }
-            .onDisappear { draft.text = "" }
+            .onDisappear {
+                if !draft.showingQRScanner { draft.text = "" }
+            }
         }
     }
 
@@ -118,6 +152,7 @@ struct ImportProfileView: View {
             draft.localError = "Configuration is too large (maximum 32 KB)."
             return
         }
+        draft.scannedEndpoint = nil
         draft.text = candidate
         draft.revealText = false
     }

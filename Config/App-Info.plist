@@ -20,6 +20,8 @@
 	<true/>
 	<key>MoleyKeychainGroup</key>
 	<string>$(AppIdentifierPrefix)$(MOLEY_BUNDLE_ID).shared</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Moley uses the camera to scan your VPN configuration QR code. Camera images are not saved or uploaded.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
