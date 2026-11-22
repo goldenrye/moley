@@ -65,13 +65,19 @@ struct HomeView: View {
                                     else { await vpn.connect() }
                                 }
                             } label: {
-                                Text(vpn.isActive ? "Disconnect" : "Connect for 30 minutes")
+                                Text([.connecting, .reasserting].contains(vpn.status)
+                                     ? "Cancel connection" : (vpn.isActive ? "Disconnect" : "Connect for 30 minutes"))
                                     .font(.headline)
                                     .frame(maxWidth: .infinity, minHeight: 38)
                             }
                             .buttonStyle(.borderedProminent)
                             .disabled(vpn.isBusy || vpn.status == .disconnecting)
                             .accessibilityIdentifier("connectButton")
+                            if vpn.canRetryConnection {
+                                Button("Retry connection") { Task { await vpn.retryConnection() } }
+                                    .buttonStyle(.bordered)
+                                    .accessibilityIdentifier("retryConnectionButton")
+                            }
                         } else {
                             Button("Set up Moley") { presentation.showingImport = true }
                                 .buttonStyle(.borderedProminent)
@@ -150,6 +156,12 @@ struct HomeView: View {
                 get: { vpn.errorMessage != nil },
                 set: { if !$0 { vpn.errorMessage = nil } }
             )) {
+                if vpn.canRetryConnection {
+                    Button("Retry connection") {
+                        vpn.errorMessage = nil
+                        Task { await vpn.retryConnection() }
+                    }
+                }
                 Button("OK") { vpn.errorMessage = nil }
             } message: { Text(vpn.errorMessage ?? "") }
             .confirmationDialog("Remove the saved VPN and its private key?", isPresented: $presentation.confirmingRemoval, titleVisibility: .visible) {

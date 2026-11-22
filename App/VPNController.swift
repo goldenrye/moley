@@ -14,6 +14,7 @@ final class VPNController: ObservableObject {
     @Published private(set) var health: TunnelHealth?
     @Published private(set) var session: TunnelSession?
     @Published private(set) var notificationWarning: String?
+    @Published private(set) var recovery = ConnectionRecovery()
     @Published var errorMessage: String?
 
     private var manager: NETunnelProviderManager?
@@ -40,7 +41,18 @@ final class VPNController: ObservableObject {
 
     var isActive: Bool { [.connected, .connecting, .reasserting, .disconnecting].contains(status) }
     var canEdit: Bool { isLoaded && !isBusy && !isActive && !autoConnect }
+    var canRetryConnection: Bool {
+        hasProfile && !isBusy && status != .disconnecting &&
+            (recovery.failure != nil || [.connecting, .reasserting].contains(status) ||
+             (status == .connected && !serverResponding))
+    }
+    private var serverResponding: Bool {
+        guard let lastHealthResponse, Date().timeIntervalSince(lastHealthResponse) < 15,
+              let handshake = health?.lastHandshake else { return false }
+        return Date().timeIntervalSince1970 - handshake <= 180
+    }
     var statusTitle: String {
+        if recovery.failure != nil { return "Connection needs attention" }
         switch status {
         case .connected: return "Tunnel active"
         case .connecting: return "Connecting"
@@ -53,6 +65,10 @@ final class VPNController: ObservableObject {
     }
 
     var healthDescription: String {
+        if let failure = recovery.failure { return failure }
+        if [.connecting, .reasserting].contains(status) {
+            return "Waiting for the connection. You can cancel or retry manually."
+        }
         guard status == .connected else { return "Your internet uses its normal connection." }
         guard let lastHealthResponse, Date().timeIntervalSince(lastHealthResponse) < 15,
               let seconds = health?.lastHandshake else {
@@ -130,6 +146,7 @@ final class VPNController: ObservableObject {
             // Once iOS saves this reference, never roll it back on a reload failure.
             saved = true
             manager = current
+            recovery = ConnectionRecovery()
             updateStatus()
             if let oldReference { try ProfileKeychain.delete(oldReference) }
             if let oldSessionReference { try? ProfileKeychain.delete(oldSessionReference) }
@@ -145,6 +162,8 @@ final class VPNController: ObservableObject {
 
     func connect() async {
         guard let manager, !isBusy, !isActive else { return }
+        errorMessage = nil
+        recovery = ConnectionRecovery()
         #if targetEnvironment(simulator)
         errorMessage = "VPN connections require a signed app on a physical iPhone. The simulator supports UI and configuration tests only."
         return
@@ -172,6 +191,7 @@ final class VPNController: ObservableObject {
             try await manager.saveToPreferences()
             try await manager.loadFromPreferences()
             if let oldReference { try? ProfileKeychain.delete(oldReference) }
+            recovery.begin(at: SessionClock.now.continuous)
             try manager.connection.startVPNTunnel()
             updateStatus()
             await scheduleReminder(lease, reference: reference)
@@ -179,14 +199,17 @@ final class VPNController: ObservableObject {
             if let createdReference { try? ProfileKeychain.delete(createdReference) }
             SessionNotifications.clear()
             manager.connection.stopVPNTunnel()
-            errorMessage = error.localizedDescription
+            let message = "Connection could not start. \(error.localizedDescription) Unlock your iPhone if requested, then tap Retry connection."
+            recovery.fail(message)
+            errorMessage = message
             updateStatus()
         }
         #endif
     }
 
-    func disconnect() async {
+    func disconnect(resetRecovery: Bool = true) async {
         guard let manager, !isBusy else { return }
+        if resetRecovery { recovery = ConnectionRecovery() }
         isBusy = true
         defer { isBusy = false }
         SessionNotifications.clear()
@@ -209,6 +232,35 @@ final class VPNController: ObservableObject {
             errorMessage = error.localizedDescription
             await reloadAfterFailure()
         }
+    }
+
+    func retryConnection() async {
+        guard canRetryConnection, let manager else { return }
+        errorMessage = nil
+        // Revoke the old lease and disable on-demand before creating a fresh one.
+        await disconnect()
+        guard !isBusy else { return }
+        isBusy = true
+        do {
+            for _ in 0..<40 {
+                updateStatus()
+                if !isActive { break }
+                try await Task.sleep(for: .milliseconds(250))
+            }
+            updateStatus()
+            guard !isActive, !autoConnect else {
+                throw ProfileError(message: "iOS has not finished disconnecting. Turn Moley off in Settings > VPN, then return and retry.")
+            }
+        } catch {
+            recovery.fail(error.localizedDescription)
+            errorMessage = error.localizedDescription
+            isBusy = false
+            return
+        }
+        isBusy = false
+        // connect() creates a new lease only after iOS confirms the old tunnel stopped.
+        guard manager === self.manager else { return }
+        await connect()
     }
 
     func setAutoConnect(_ enabled: Bool) async {
@@ -243,6 +295,7 @@ final class VPNController: ObservableObject {
             let leaseReference = sessionReference
             try await manager.removeFromPreferences()
             self.manager = nil
+            recovery = ConnectionRecovery()
             updateStatus()
             if let reference { try ProfileKeychain.delete(reference) }
             if let leaseReference { try ProfileKeychain.delete(leaseReference) }
@@ -253,20 +306,36 @@ final class VPNController: ObservableObject {
     func refreshHealth() {
         updateStatus()
         if sessionRemaining <= 0 && (isActive || autoConnect) {
-            Task { await disconnect() }
+            Task { await disconnect(resetRecovery: recovery.failure == nil) }
             return
         }
+        evaluateRecovery()
         guard status == .connected, let session = manager?.connection as? NETunnelProviderSession else { return }
+        let attemptID = recovery.id
         do {
             try session.sendProviderMessage(Data("health".utf8)) { [weak self, weak session] data in
                 Task { @MainActor [weak self] in
                     guard let self, self.status == .connected,
+                          self.recovery.id == attemptID,
                           session === self.manager?.connection else { return }
                     self.health = data.flatMap { try? JSONDecoder().decode(TunnelHealth.self, from: $0) }
                     self.lastHealthResponse = Date()
+                    self.evaluateRecovery()
                 }
             }
         } catch { health = nil }
+    }
+
+    private func evaluateRecovery() {
+        guard !isBusy, sessionRemaining > 0 else { return }
+        guard recovery.observe(status: status, serverResponding: serverResponding,
+                               at: SessionClock.now.continuous) else { return }
+        let attemptID = recovery.id
+        Task {
+            // A manual retry or cancellation may have superseded this failure.
+            guard recovery.id == attemptID else { return }
+            await disconnect(resetRecovery: false)
+        }
     }
 
     func extendSession(expectedID: UUID? = nil, expectedRevision: Int? = nil) async {
